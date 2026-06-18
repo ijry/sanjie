@@ -21,6 +21,26 @@
       </view>
     </view>
 
+    <view v-if="showGuide" class="guide-card">
+      <view class="guide-card__head">
+        <view>
+          <text class="guide-card__kicker">DEMO GUIDE</text>
+          <text class="guide-card__title">第一次演示建议</text>
+        </view>
+        <up-button size="mini" plain text="收起" @click="dismissGuide" />
+      </view>
+      <view class="guide-card__body">
+        <view v-for="item in quickGuide" :key="item.title" class="guide-step" @click="go(item.url)">
+          <text class="guide-step__mark">{{ item.mark }}</text>
+          <view>
+            <text class="guide-step__title">{{ item.title }}</text>
+            <text class="guide-step__desc">{{ item.desc }}</text>
+          </view>
+        </view>
+      </view>
+      <text class="guide-card__note">mock 演示状态会保存在本地，可在“我的”页一键重置。</text>
+    </view>
+
     <view class="realm-map">
       <view class="realm-map__head">
         <view>
@@ -108,6 +128,7 @@ import { showError, showSuccess } from '../../utils/format'
 
 const metrics = ref({})
 const alerts = ref([])
+const showGuide = ref(false)
 
 const commandStats = computed(() => [
   { label: '待勾魂', value: metrics.value.pendingCaptureCount || 0, url: '/pages/capture/index' },
@@ -136,6 +157,12 @@ const demoSteps = [
   { index: '04', title: '回到天眼审计', desc: '检查刚才操作写入的审计记录。', url: '/pages/audit/index' }
 ]
 
+const quickGuide = [
+  { mark: '切', title: '先切换身份', desc: '去我的页切到黑无常、判官或孟婆，观察推荐入口变化。', url: '/pages/mine/index' },
+  { mark: '办', title: '做一个动作', desc: '开始勾魂、冻结命簿、审批或补货，制造可追踪状态。', url: '/pages/capture/index' },
+  { mark: '查', title: '回天眼审计', desc: '进入审计时间线，确认刚才的操作已经留痕。', url: '/pages/audit/index' }
+]
+
 function go(url) {
   if (['/pages/index/index', '/pages/capture/index', '/pages/reincarnation/index', '/pages/approval/index', '/pages/mine/index'].includes(url)) {
     uni.switchTab({ url })
@@ -148,9 +175,15 @@ async function load() {
   try {
     metrics.value = await getDashboard()
     alerts.value = await getAlerts()
+    showGuide.value = uni.getStorageSync('sanjie_demo_guide_seen') !== 'yes'
   } catch (error) {
     showError(error)
   }
+}
+
+function dismissGuide() {
+  uni.setStorageSync('sanjie_demo_guide_seen', 'yes')
+  showGuide.value = false
 }
 
 async function markAlert(item) {
@@ -306,12 +339,103 @@ onShow(load)
 
 .realm-map,
 .demo-route,
-.alert-board {
+.alert-board,
+.guide-card {
   padding: 22rpx;
   border: 1rpx solid rgba(120, 53, 15, 0.16);
   border-radius: 24rpx;
   background: rgba(255, 250, 240, 0.92);
   box-shadow: 0 12rpx 30rpx rgba(66, 41, 20, 0.08);
+}
+
+.guide-card {
+  border-color: rgba(37, 99, 235, 0.18);
+  background:
+    linear-gradient(90deg, rgba(37, 99, 235, 0.06) 1rpx, transparent 1rpx),
+    linear-gradient(135deg, #eff6ff, #fffaf0);
+  background-size: 30rpx 30rpx;
+}
+
+.guide-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14rpx;
+}
+
+.guide-card__kicker,
+.guide-card__title,
+.guide-card__note {
+  display: block;
+}
+
+.guide-card__kicker {
+  color: #1d4ed8;
+  font-size: 19rpx;
+  font-weight: 900;
+  letter-spacing: 2rpx;
+}
+
+.guide-card__title {
+  margin-top: 4rpx;
+  color: #0f172a;
+  font-size: 32rpx;
+  font-weight: 900;
+}
+
+.guide-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  margin-top: 16rpx;
+}
+
+.guide-step {
+  display: grid;
+  grid-template-columns: 58rpx minmax(0, 1fr);
+  gap: 12rpx;
+  padding: 14rpx;
+  border: 1rpx solid rgba(37, 99, 235, 0.12);
+  border-radius: 16rpx;
+  background: rgba(255, 250, 240, 0.76);
+}
+
+.guide-step__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  color: #eff6ff;
+  border-radius: 14rpx;
+  background: #1d4ed8;
+  font-size: 22rpx;
+  font-weight: 900;
+}
+
+.guide-step__title,
+.guide-step__desc {
+  display: block;
+}
+
+.guide-step__title {
+  color: #0f172a;
+  font-size: 25rpx;
+  font-weight: 900;
+}
+
+.guide-step__desc {
+  margin-top: 4rpx;
+  color: #475569;
+  font-size: 21rpx;
+  line-height: 1.38;
+}
+
+.guide-card__note {
+  margin-top: 12rpx;
+  color: #1e3a8a;
+  font-size: 22rpx;
+  font-weight: 800;
 }
 
 .realm-map__head,

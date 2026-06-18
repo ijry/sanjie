@@ -147,6 +147,8 @@ function actionLabel(action) {
     'hell.dispatch': '地狱分流',
     'hell.review': '刑期复核',
     'soup.issue': '孟婆汤发放',
+    'soup.restock': '汤坊补货',
+    'soup.adjust': '汤坊扣减',
     'soup.warning': '汤坊预警',
     'wish.route': '愿望转派',
     'wish.resolve': '愿望办结',

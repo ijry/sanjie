@@ -1,6 +1,9 @@
 import { createMockState } from './data'
 
-let state = createMockState()
+const MOCK_STATE_KEY = 'sanjie_mock_state_v1'
+const MOCK_STARTED_KEY = 'sanjie_mock_started_at'
+
+let state = loadMockState()
 
 export function mockRequest(path, options = {}) {
   const method = (options.method || 'GET').toUpperCase()
@@ -20,6 +23,8 @@ export function mockRequest(path, options = {}) {
 function route(method, rawPath, data, userId) {
   const { pathname, searchParams } = parsePath(rawPath)
   if (method === 'GET' && pathname === '/api/health') return { status: 'ok', mock: true }
+  if (method === 'GET' && pathname === '/api/mock/session') return mockSession()
+  if (method === 'POST' && pathname === '/api/mock/reset') return resetMockState()
   if (method === 'GET' && pathname === '/api/users/me') return currentUser(userId)
   if (method === 'POST' && pathname === '/api/users/switch') return switchUser(data.userId)
   if (method === 'GET' && pathname === '/api/dashboard') return dashboard()
@@ -63,7 +68,7 @@ function route(method, rawPath, data, userId) {
   if (method === 'POST' && match(pathname, '/api/wishes/:id/resolve')) return updateWish(idOf(pathname), { status: 'resolved', resultNote: data.note || '' }, userId, 'wish.resolve')
   if (method === 'POST' && match(pathname, '/api/wishes/:id/reject')) return updateWish(idOf(pathname), { status: 'rejected', resultNote: data.note || '' }, userId, 'wish.reject')
   if (method === 'GET' && pathname === '/api/soup/inventory') return state.soupInventory
-  if (method === 'POST' && match(pathname, '/api/soup/inventory/:id/adjust')) return adjustSoup(idOf(pathname), data)
+  if (method === 'POST' && match(pathname, '/api/soup/inventory/:id/adjust')) return adjustSoup(idOf(pathname), data, userId)
   if (method === 'GET' && pathname === '/api/soup/records') return state.soupRecords
   throw new Error(`mock endpoint not implemented: ${method} ${pathname}`)
 }
@@ -75,7 +80,28 @@ function currentUser(userId) {
 
 function switchUser(userId) {
   state.currentUserId = Number(userId) || 1
+  persistMockState()
   return { userId: state.currentUserId }
+}
+
+function mockSession() {
+  return {
+    persisted: true,
+    storageKey: MOCK_STATE_KEY,
+    startedAt: uni.getStorageSync(MOCK_STARTED_KEY) || '',
+    currentUserId: state.currentUserId,
+    auditLogCount: state.auditLogs.length,
+    approvalCount: state.approvals.length,
+    soupRecordCount: state.soupRecords.length,
+    handledAlertCount: state.alerts.filter(item => item.handled).length
+  }
+}
+
+function resetMockState() {
+  state = createMockState()
+  uni.setStorageSync('sanjie_user_id', 1)
+  persistMockState(true)
+  return mockSession()
 }
 
 function dashboard() {
@@ -91,12 +117,14 @@ function dashboard() {
 function handleAlert(id) {
   const item = findByID(state.alerts, id)
   item.handled = true
+  persistMockState()
   return { id, handled: true }
 }
 
 function updateCapture(id, patch) {
   const item = findByID(state.captureTasks, id)
   Object.assign(item, patch)
+  persistMockState()
   return { id, status: item.status }
 }
 
@@ -106,6 +134,7 @@ function freezeLifeBook(id, userId) {
   item.riskFlag = 'critical'
   item.updatedAt = now()
   addAudit(userId, 'life_book.freeze', 'life_book', id, 'mock 冻结生死簿')
+  persistMockState()
   return { id, locked: true }
 }
 
@@ -125,6 +154,7 @@ function createLifespanApproval(id, data, userId) {
   }
   state.approvals.unshift(approval)
   addAudit(userId, 'approval.create', 'life_book', id, approval.reason)
+  persistMockState()
   return { approvalId: approval.id }
 }
 
@@ -135,12 +165,14 @@ function updateApproval(id, status, data, userId) {
   item.resultNote = data.note || ''
   item.updatedAt = now()
   addAudit(userId, `approval.${status}`, 'approval', id, item.resultNote)
+  persistMockState()
   return { id, status }
 }
 
 function updateReincarnation(id, patch) {
   const item = findByID(state.reincarnations, id)
   Object.assign(item, patch, { updatedAt: now() })
+  persistMockState()
   return { id, status: item.status, soupStatus: item.soupStatus, quotaType: item.quotaType }
 }
 
@@ -162,6 +194,7 @@ function issueSoup(id, data, userId) {
     createdAt: now()
   })
   addAudit(userId, 'soup.issue', 'reincarnation', id, 'mock 发放孟婆汤')
+  persistMockState()
   return { id, soupStatus: 'issued' }
 }
 
@@ -184,6 +217,7 @@ function reviewHellSentence(id, data, userId) {
   }
   state.approvals.unshift(approval)
   addAudit(userId, 'hell.review', 'hell_sentence', id, data.note || '')
+  persistMockState()
   return { id, reviewStatus: 'reviewing' }
 }
 
@@ -196,6 +230,7 @@ function dispatchHellFloor(id, data, userId) {
   source.updatedAt = now()
   target.updatedAt = now()
   addAudit(userId, 'hell.dispatch', 'hell_floor', id, `向 ${target.name} 分流 ${amount} 魂`)
+  persistMockState()
   return { sourceFloorId: source.id, targetFloorId: target.id, amount }
 }
 
@@ -203,13 +238,16 @@ function updateWish(id, patch, userId, action) {
   const item = findByID(state.wishes, id)
   Object.assign(item, patch, { updatedAt: now() })
   addAudit(userId, action, 'wish', id, patch.resultNote || '')
+  persistMockState()
   return { id, status: item.status }
 }
 
-function adjustSoup(id, data) {
+function adjustSoup(id, data, userId) {
   const item = findByID(state.soupInventory, id)
   item.stock = Math.max(0, item.stock + (Number(data.delta) || 0))
   item.updatedAt = now()
+  addAudit(userId, Number(data.delta) >= 0 ? 'soup.restock' : 'soup.adjust', 'soup_inventory', id, data.note || 'mock 调整孟婆汤库存')
+  persistMockState()
   return { id, stock: item.stock }
 }
 
@@ -264,4 +302,29 @@ function idOf(pathname) {
 
 function now() {
   return new Date().toISOString()
+}
+
+function loadMockState() {
+  try {
+    const raw = uni.getStorageSync(MOCK_STATE_KEY)
+    if (!raw) {
+      const fresh = createMockState()
+      uni.setStorageSync(MOCK_STARTED_KEY, now())
+      uni.setStorageSync(MOCK_STATE_KEY, JSON.stringify(fresh))
+      return fresh
+    }
+    return JSON.parse(raw)
+  } catch (error) {
+    const fresh = createMockState()
+    uni.setStorageSync(MOCK_STARTED_KEY, now())
+    uni.setStorageSync(MOCK_STATE_KEY, JSON.stringify(fresh))
+    return fresh
+  }
+}
+
+function persistMockState(resetStartedAt = false) {
+  if (resetStartedAt || !uni.getStorageSync(MOCK_STARTED_KEY)) {
+    uni.setStorageSync(MOCK_STARTED_KEY, now())
+  }
+  uni.setStorageSync(MOCK_STATE_KEY, JSON.stringify(state))
 }

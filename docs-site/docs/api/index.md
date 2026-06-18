@@ -42,6 +42,17 @@ X-User-ID: 1
 | 4 | 黑无常 |
 | 5 | 孟婆 |
 
+## Mock 演示接口
+
+以下接口只在 H5 mock 模式下使用，用于文档站内嵌演示的本地会话管理；真实 Go + SQLite 后端不需要这些接口。
+
+```text
+GET  /api/mock/session
+POST /api/mock/reset
+```
+
+`GET /api/mock/session` 返回当前本地 mock 会话的开始时间、审计日志数量、审批单数量、发汤记录数量和已处理预警数量。`POST /api/mock/reset` 会恢复前端 mock 初始数据，并切回玉帝身份。
+
 ## 调试与契约
 
 仓库内提供两份开发辅助文件：

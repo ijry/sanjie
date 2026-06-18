@@ -28,6 +28,23 @@
       </view>
     </view>
 
+    <view class="demo-panel">
+      <view class="demo-panel__head">
+        <view>
+          <text class="demo-panel__kicker">MOCK SESSION</text>
+          <text class="demo-panel__title">演示状态</text>
+        </view>
+        <up-button v-if="mockEnabled" size="mini" type="warning" text="重置演示" @click="confirmReset" />
+      </view>
+      <view class="demo-metrics">
+        <view v-for="item in demoMetrics" :key="item.label" class="demo-metric">
+          <text class="demo-metric__value">{{ item.value }}</text>
+          <text class="demo-metric__label">{{ item.label }}</text>
+        </view>
+      </view>
+      <text class="demo-panel__note">{{ demoNote }}</text>
+    </view>
+
     <view class="quick-panel">
       <view class="quick-panel__head">
         <text>值守快捷入口</text>
@@ -74,21 +91,39 @@
 
 <script setup>
 import { computed } from 'vue'
+import { ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { API_BASE_URL, MOCK_ENABLED } from '../../api/http'
+import { getMockSession, resetMockSession } from '../../api/mock'
 import { useUserStore } from '../../stores/user'
 import { roleName } from '../../utils/auth'
+import { displayTime, showError, showSuccess } from '../../utils/format'
 
 const user = useUserStore()
+const mockSession = ref(null)
 const avatarText = computed(() => (user.current?.nickname || '三界').slice(0, 1))
 const apiMode = computed(() => (MOCK_ENABLED ? '前端 Mock' : 'Go + SQLite'))
+const mockEnabled = computed(() => MOCK_ENABLED)
 
 const tokenLines = computed(() => [
   { label: '当前角色', value: roleName(user.current?.role) },
   { label: '账号标识', value: user.current?.username || '-' },
   { label: '接口地址', value: MOCK_ENABLED ? 'mock://sanjie' : API_BASE_URL },
-  { label: '演示模式', value: MOCK_ENABLED ? '内存数据，刷新恢复' : '真实后端，SQLite 持久化' }
+  { label: '演示模式', value: MOCK_ENABLED ? '本地持久化，可一键重置' : '真实后端，SQLite 持久化' }
 ])
+
+const demoMetrics = computed(() => [
+  { label: '审计日志', value: mockSession.value?.auditLogCount ?? '-' },
+  { label: '审批单', value: mockSession.value?.approvalCount ?? '-' },
+  { label: '发汤记录', value: mockSession.value?.soupRecordCount ?? '-' },
+  { label: '已处理预警', value: mockSession.value?.handledAlertCount ?? '-' }
+])
+
+const demoNote = computed(() => {
+  if (!MOCK_ENABLED) return '当前连接真实 Go + SQLite 后端，数据由后端数据库保存。'
+  if (!mockSession.value?.startedAt) return 'mock 状态正在读取。'
+  return `当前 mock 会话始于 ${displayTime(mockSession.value.startedAt)}，刷新页面不会丢失演示操作。`
+})
 
 const dutyHint = computed(() => {
   const hints = {
@@ -172,8 +207,37 @@ function showDocsInfo() {
   })
 }
 
-onShow(() => {
-  user.fetchMe()
+async function loadMockSession() {
+  if (!MOCK_ENABLED) return
+  try {
+    mockSession.value = await getMockSession()
+  } catch (error) {
+    showError(error)
+  }
+}
+
+function confirmReset() {
+  uni.showModal({
+    title: '重置演示数据',
+    content: '将恢复 mock 初始数据、清空本轮操作状态，并切回玉帝身份。',
+    success: async res => {
+      if (!res.confirm) return
+      try {
+        await resetMockSession()
+        uni.setStorageSync('sanjie_demo_guide_seen', '')
+        await user.fetchMe()
+        await loadMockSession()
+        showSuccess('演示已重置')
+      } catch (error) {
+        showError(error)
+      }
+    }
+  })
+}
+
+onShow(async () => {
+  await user.fetchMe()
+  await loadMockSession()
 })
 </script>
 
@@ -272,6 +336,7 @@ onShow(() => {
 }
 
 .identity-panel,
+.demo-panel,
 .quick-panel,
 .permission-panel,
 .system-panel {
@@ -282,7 +347,15 @@ onShow(() => {
   box-shadow: 0 12rpx 30rpx rgba(66, 41, 20, 0.08);
 }
 
+.demo-panel {
+  background:
+    linear-gradient(90deg, rgba(37, 99, 235, 0.06) 1rpx, transparent 1rpx),
+    linear-gradient(135deg, #eff6ff, #fffaf0);
+  background-size: 30rpx 30rpx;
+}
+
 .identity-panel__head,
+.demo-panel__head,
 .quick-panel__head,
 .permission-panel__head {
   display: flex;
@@ -298,7 +371,16 @@ onShow(() => {
   letter-spacing: 2rpx;
 }
 
+.demo-panel__kicker {
+  display: block;
+  color: #1d4ed8;
+  font-size: 19rpx;
+  font-weight: 900;
+  letter-spacing: 2rpx;
+}
+
 .identity-panel__title,
+.demo-panel__title,
 .quick-panel__head text:first-child,
 .permission-panel__head text:first-child {
   display: block;
@@ -306,6 +388,51 @@ onShow(() => {
   color: #25211b;
   font-size: 32rpx;
   font-weight: 900;
+}
+
+.demo-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10rpx;
+  margin-top: 18rpx;
+}
+
+.demo-metric {
+  min-width: 0;
+  padding: 14rpx 8rpx;
+  border: 1rpx solid rgba(37, 99, 235, 0.12);
+  border-radius: 16rpx;
+  background: rgba(255, 250, 240, 0.78);
+}
+
+.demo-metric__value,
+.demo-metric__label {
+  display: block;
+  text-align: center;
+}
+
+.demo-metric__value {
+  color: #1e3a8a;
+  font-size: 28rpx;
+  font-weight: 900;
+}
+
+.demo-metric__label {
+  overflow: hidden;
+  margin-top: 5rpx;
+  color: #475569;
+  font-size: 19rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.demo-panel__note {
+  display: block;
+  margin-top: 12rpx;
+  color: #1e3a8a;
+  font-size: 22rpx;
+  font-weight: 800;
+  line-height: 1.42;
 }
 
 .quick-panel__head text:last-child,

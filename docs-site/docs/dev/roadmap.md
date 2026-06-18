@@ -52,6 +52,7 @@ docs/superpowers/plans/2026-06-18-sanjie-mobile-full-implementation.md
 - 孟婆汤已升级为汤坊库存台，支持补货、扣减、低库存雷达和发放流水。
 - 审计日志已升级为天眼留痕时间线，支持按目标类型过滤。
 - 我的页和切换身份页已升级为仙籍令牌与多角色身份牌。
+- H5 mock 演示已支持本地持久化、首次导览、会话指标和一键重置。
 - 当前版本已实现 uni-app + uview-plus H5 页面，并通过 `npm run build:h5` 验证。
 
 ## 阶段 6：联调验收
