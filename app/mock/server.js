@@ -56,12 +56,12 @@ function route(method, rawPath, data, userId) {
   if (method === 'GET' && pathname === '/api/hell/sentences') return state.hellSentences
   if (method === 'GET' && match(pathname, '/api/hell/sentences/:id')) return findByID(state.hellSentences, idOf(pathname))
   if (method === 'POST' && match(pathname, '/api/hell/sentences/:id/review')) return reviewHellSentence(idOf(pathname), data, userId)
-  if (method === 'POST' && match(pathname, '/api/hell/floors/:id/dispatch')) return dispatchHellFloor(idOf(pathname), data)
+  if (method === 'POST' && match(pathname, '/api/hell/floors/:id/dispatch')) return dispatchHellFloor(idOf(pathname), data, userId)
   if (method === 'GET' && pathname === '/api/wishes') return filterStatus(state.wishes, searchParams)
   if (method === 'GET' && match(pathname, '/api/wishes/:id')) return findByID(state.wishes, idOf(pathname))
-  if (method === 'POST' && match(pathname, '/api/wishes/:id/route')) return updateWish(idOf(pathname), { status: 'routed', assignedDeity: data.assignedDeity || '财神', resultNote: data.note || '' })
-  if (method === 'POST' && match(pathname, '/api/wishes/:id/resolve')) return updateWish(idOf(pathname), { status: 'resolved', resultNote: data.note || '' })
-  if (method === 'POST' && match(pathname, '/api/wishes/:id/reject')) return updateWish(idOf(pathname), { status: 'rejected', resultNote: data.note || '' })
+  if (method === 'POST' && match(pathname, '/api/wishes/:id/route')) return updateWish(idOf(pathname), { status: 'routed', assignedDeity: data.assignedDeity || '财神', resultNote: data.note || '' }, userId, 'wish.route')
+  if (method === 'POST' && match(pathname, '/api/wishes/:id/resolve')) return updateWish(idOf(pathname), { status: 'resolved', resultNote: data.note || '' }, userId, 'wish.resolve')
+  if (method === 'POST' && match(pathname, '/api/wishes/:id/reject')) return updateWish(idOf(pathname), { status: 'rejected', resultNote: data.note || '' }, userId, 'wish.reject')
   if (method === 'GET' && pathname === '/api/soup/inventory') return state.soupInventory
   if (method === 'POST' && match(pathname, '/api/soup/inventory/:id/adjust')) return adjustSoup(idOf(pathname), data)
   if (method === 'GET' && pathname === '/api/soup/records') return state.soupRecords
@@ -103,6 +103,8 @@ function updateCapture(id, patch) {
 function freezeLifeBook(id, userId) {
   const item = findByID(state.lifeBookRecords, id)
   item.locked = true
+  item.riskFlag = 'critical'
+  item.updatedAt = now()
   addAudit(userId, 'life_book.freeze', 'life_book', id, 'mock 冻结生死簿')
   return { id, locked: true }
 }
@@ -166,22 +168,41 @@ function issueSoup(id, data, userId) {
 function reviewHellSentence(id, data, userId) {
   const item = findByID(state.hellSentences, id)
   item.reviewStatus = 'reviewing'
+  item.updatedAt = now()
+  const approval = {
+    id: state.nextApprovalId++,
+    type: 'hell_review',
+    targetId: id,
+    title: '地狱刑期复核',
+    status: 'pending',
+    applicantId: userId,
+    approverId: null,
+    reason: data.note || '移动端发起刑期复核',
+    resultNote: '',
+    createdAt: now(),
+    updatedAt: now()
+  }
+  state.approvals.unshift(approval)
   addAudit(userId, 'hell.review', 'hell_sentence', id, data.note || '')
   return { id, reviewStatus: 'reviewing' }
 }
 
-function dispatchHellFloor(id, data) {
+function dispatchHellFloor(id, data, userId) {
   const source = findByID(state.hellFloors, id)
   const target = findByID(state.hellFloors, Number(data.targetFloorId))
   const amount = Number(data.amount) || 0
   source.occupancy = Math.max(0, source.occupancy - amount)
   target.occupancy = Math.min(target.capacity, target.occupancy + amount)
+  source.updatedAt = now()
+  target.updatedAt = now()
+  addAudit(userId, 'hell.dispatch', 'hell_floor', id, `向 ${target.name} 分流 ${amount} 魂`)
   return { sourceFloorId: source.id, targetFloorId: target.id, amount }
 }
 
-function updateWish(id, patch) {
+function updateWish(id, patch, userId, action) {
   const item = findByID(state.wishes, id)
   Object.assign(item, patch, { updatedAt: now() })
+  addAudit(userId, action, 'wish', id, patch.resultNote || '')
   return { id, status: item.status }
 }
 
