@@ -11,6 +11,7 @@ coverage/
 # VitePress
 docs-site/docs/.vitepress/dist/
 docs-site/docs/.vitepress/cache/
+docs-site/docs/public/h5-demo/
 
 # Go
 *.exe
@@ -42,4 +43,3 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
-

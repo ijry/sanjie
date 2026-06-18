@@ -63,6 +63,20 @@ npm run app:build:mock
 
 mock 模式通过 `VITE_SANJIE_MOCK=true` 启用，数据来自 `app/mock/`。
 
+构建可嵌入文档站的 H5 mock 演示：
+
+```bash
+npm run app:build:demo
+```
+
+输出目录：
+
+```text
+docs-site/docs/public/h5-demo/
+```
+
+该目录是构建产物，不提交到 Git。GitHub Pages workflow 会在发布前重新生成。
+
 ## Docker Compose
 
 ```bash
@@ -94,6 +108,12 @@ npm run docs:install
 npm run docs:build
 ```
 
+如果需要同时生成内嵌 H5 演示：
+
+```bash
+npm run docs:build-with-demo
+```
+
 GitHub Pages workflow 会发布：
 
 ```text
@@ -121,4 +141,5 @@ GitHub Actions 的 `CI` workflow 会分别执行：
 - 根目录 `npm run server:smoke` 的后端 HTTP 烟测。
 - `app` 目录下的 `npm install --legacy-peer-deps` 和 `npm run build:h5`。
 - `app` 目录下的 `npm run build:h5:mock`。
+- `app` 目录下的 `npm run build:demo`，验证文档内嵌 H5 mock 产物可生成。
 - `docs-site` 目录下的 `npm install` 和 `npm run docs:build`。

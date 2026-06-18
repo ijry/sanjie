@@ -14,9 +14,11 @@
     "app:install": "npm --prefix app install --legacy-peer-deps",
     "app:build": "npm --prefix app run build:h5",
     "app:build:mock": "npm --prefix app run build:h5:mock",
+    "app:build:demo": "npm --prefix app run build:demo",
     "docs:install": "npm --prefix docs-site install",
     "docs:build": "npm --prefix docs-site run docs:build",
-    "verify": "npm run server:test && npm run server:build && npm run server:smoke && npm run app:build && npm run app:build:mock && npm run docs:build"
+    "docs:build-with-demo": "npm --prefix docs-site run docs:build-with-demo",
+    "verify": "npm run server:test && npm run server:build && npm run server:smoke && npm run app:build && npm run app:build:mock && npm run app:build:demo && npm run docs:build"
   },
   "engines": {
     "node": ">=20"

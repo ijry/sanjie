@@ -6,7 +6,8 @@
     "dev:h5": "cross-env UNI_INPUT_DIR=. uni",
     "dev:h5:mock": "cross-env UNI_INPUT_DIR=. VITE_SANJIE_MOCK=true uni",
     "build:h5": "cross-env UNI_INPUT_DIR=. uni build",
-    "build:h5:mock": "cross-env UNI_INPUT_DIR=. VITE_SANJIE_MOCK=true uni build"
+    "build:h5:mock": "cross-env UNI_INPUT_DIR=. VITE_SANJIE_MOCK=true uni build",
+    "build:demo": "node scripts/build-demo.js"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-alpha-5010120260519001",

@@ -1,5 +1,5 @@
 export function createMockState() {
-  const now = '2026-06-18T02:00:00+08:00'
+  const now = '2026-06-18T10:00:00+08:00'
   return {
     currentUserId: 1,
     users: [
@@ -7,62 +7,120 @@ export function createMockState() {
       { id: 2, username: 'yanwang', nickname: '阎王', role: 'yanwang', avatar: '' },
       { id: 3, username: 'judge', nickname: '判官', role: 'judge', avatar: '' },
       { id: 4, username: 'black', nickname: '黑无常', role: 'impermanence', avatar: '' },
-      { id: 5, username: 'mengpo', nickname: '孟婆', role: 'mengpo', avatar: '' }
+      { id: 5, username: 'mengpo', nickname: '孟婆', role: 'mengpo', avatar: '' },
+      { id: 6, username: 'tianbing', nickname: '巨灵神', role: 'heavenly_general', avatar: '' },
+      { id: 7, username: 'chenghuang', nickname: '城隍爷', role: 'city_god', avatar: '' },
+      { id: 8, username: 'auditor', nickname: '巡天审计使', role: 'auditor', avatar: '' }
     ],
     alerts: [
-      { id: 1, level: 'critical', title: '生死簿批量划名风险', content: '检测到同一时辰 3 次寿命变更申请', handled: false, createdAt: now },
-      { id: 2, level: 'warning', title: '奈何桥排队拥堵', content: '投胎队列已超过阈值，建议增开普通胎位', handled: false, createdAt: now },
-      { id: 3, level: 'info', title: '孟婆汤库存提醒', content: '低糖无梦款接近预警库存', handled: false, createdAt: now }
+      { id: 1, level: 'critical', title: '生死簿批量划名风险', content: '检测到同一时辰 3 次寿命变更申请，疑似关系户团建。', handled: false, createdAt: now },
+      { id: 2, level: 'warning', title: '奈何桥排队拥堵', content: '投胎队列超过阈值，建议增开普通胎位和猫界专线。', handled: false, createdAt: now },
+      { id: 3, level: 'info', title: '孟婆汤库存提醒', content: '低糖无梦款接近预警库存，控糖魂魄请提前预约。', handled: false, createdAt: now },
+      { id: 4, level: 'critical', title: '拔舌地狱容量过高', content: '一层负载 96%，建议向剪刀地狱和蒸笼地狱分流。', handled: false, createdAt: now },
+      { id: 5, level: 'warning', title: '天兵巡逻漏签', content: '南天门三号岗漏签两次，疑似看短视频入迷。', handled: true, createdAt: now }
     ],
     souls: [
-      { id: 1, name: '张三丰外卖版', birthInfo: '甲子年三月初三', deathInfo: '夜跑误入鬼门关', status: 'pending_capture', meritScore: 72, karmaScore: 18, memoryResidue: 12, relationshipRisk: 'low' },
-      { id: 2, name: '李小卷', birthInfo: '乙丑年七月十五', deathInfo: '熬夜写奏折', status: 'reincarnation_waiting', meritScore: 91, karmaScore: 6, memoryResidue: 25, relationshipRisk: 'medium' },
-      { id: 3, name: '王大胆', birthInfo: '丙寅年正月初九', deathInfo: '十八层体验券过期', status: 'hell', meritScore: 21, karmaScore: 88, memoryResidue: 4, relationshipRisk: 'high' }
+      { id: 1, name: '张三丰外卖版', birthInfo: '甲子年三月初三 午时', deathInfo: '夜跑误入鬼门关', status: 'pending_capture', meritScore: 72, karmaScore: 18, memoryResidue: 12, relationshipRisk: 'low' },
+      { id: 2, name: '李小卷', birthInfo: '乙丑年七月十五 子时', deathInfo: '熬夜写奏折', status: 'reincarnation_waiting', meritScore: 91, karmaScore: 6, memoryResidue: 25, relationshipRisk: 'medium' },
+      { id: 3, name: '王大胆', birthInfo: '丙寅年正月初九 酉时', deathInfo: '十八层体验券过期', status: 'hell', meritScore: 21, karmaScore: 88, memoryResidue: 4, relationshipRisk: 'high' },
+      { id: 4, name: '赵六六', birthInfo: '丁卯年二月初二 辰时', deathInfo: '阳寿异常延长', status: 'alive', meritScore: 66, karmaScore: 9, memoryResidue: 0, relationshipRisk: 'high' },
+      { id: 5, name: '钱多多', birthInfo: '戊辰年五月初五 巳时', deathInfo: '许愿过度反噬', status: 'pending_capture', meritScore: 8, karmaScore: 45, memoryResidue: 7, relationshipRisk: 'medium' },
+      { id: 6, name: '孙不睡', birthInfo: '己巳年六月十六 丑时', deathInfo: '连续加班三百年', status: 'reincarnation_waiting', meritScore: 84, karmaScore: 12, memoryResidue: 38, relationshipRisk: 'low' },
+      { id: 7, name: '周摸鱼', birthInfo: '庚午年八月廿八 申时', deathInfo: '工位灵魂出窍', status: 'captured', meritScore: 49, karmaScore: 31, memoryResidue: 19, relationshipRisk: 'medium' },
+      { id: 8, name: '吴插队', birthInfo: '辛未年九月初一 卯时', deathInfo: '试图插队投胎', status: 'reviewing', meritScore: 17, karmaScore: 67, memoryResidue: 11, relationshipRisk: 'high' },
+      { id: 9, name: '郑有礼', birthInfo: '壬申年十一月十一 亥时', deathInfo: '寿终正寝', status: 'reincarnation_waiting', meritScore: 96, karmaScore: 2, memoryResidue: 5, relationshipRisk: 'low' },
+      { id: 10, name: '冯造谣', birthInfo: '癸酉年腊月初八 未时', deathInfo: '造谣地府 KPI', status: 'hell', meritScore: 14, karmaScore: 93, memoryResidue: 3, relationshipRisk: 'low' }
     ],
     captureTasks: [
-      { id: 1, soulId: 1, soulName: '张三丰外卖版', assigneeId: 4, assigneeName: '黑无常', status: 'pending', location: '人间西市烧烤摊', scheduledTime: now, actualTime: '', exceptionType: '', exceptionNote: '' },
-      { id: 2, soulId: 3, soulName: '王大胆', assigneeId: 4, assigneeName: '黑无常', status: 'running', location: '忘川河边自拍点', scheduledTime: now, actualTime: '', exceptionType: '', exceptionNote: '' },
-      { id: 3, soulId: 2, soulName: '李小卷', assigneeId: 4, assigneeName: '黑无常', status: 'exception', location: '天庭加班区', scheduledTime: now, actualTime: '', exceptionType: 'not_found', exceptionNote: '疑似临时飞升' }
+      { id: 1, soulId: 1, soulName: '张三丰外卖版', assigneeId: 4, assigneeName: '黑无常', status: 'pending', location: '人间西市烧烤摊', scheduledTime: '2026-06-18T10:30:00+08:00', actualTime: '', exceptionType: '', exceptionNote: '' },
+      { id: 2, soulId: 5, soulName: '钱多多', assigneeId: 4, assigneeName: '黑无常', status: 'running', location: '财神庙许愿池', scheduledTime: '2026-06-18T09:40:00+08:00', actualTime: '', exceptionType: '', exceptionNote: '' },
+      { id: 3, soulId: 2, soulName: '李小卷', assigneeId: 4, assigneeName: '黑无常', status: 'exception', location: '天庭加班区', scheduledTime: '2026-06-18T09:00:00+08:00', actualTime: '', exceptionType: 'ascended', exceptionNote: '疑似临时飞升，工牌还在闪。' },
+      { id: 4, soulId: 7, soulName: '周摸鱼', assigneeId: 4, assigneeName: '黑无常', status: 'completed', location: '人间云办公间', scheduledTime: '2026-06-18T08:10:00+08:00', actualTime: '2026-06-18T08:20:00+08:00', exceptionType: '', exceptionNote: '' },
+      { id: 5, soulId: 8, soulName: '吴插队', assigneeId: 7, assigneeName: '城隍爷', status: 'canceled', location: '鬼门关 VIP 通道', scheduledTime: '2026-06-18T07:30:00+08:00', actualTime: '', exceptionType: 'wrong_soul', exceptionNote: '发现目标其实是黄牛。' }
     ],
     lifeBookRecords: [
       { id: 1, soulId: 1, soulName: '张三丰外卖版', expectedLifespan: 88, actualLifespan: 73, deathReason: '夜跑误入鬼门关', fateLevel: '小富即安', calamityCount: 3, locked: false, riskFlag: 'warning', updatedAt: now },
       { id: 2, soulId: 2, soulName: '李小卷', expectedLifespan: 99, actualLifespan: 99, deathReason: '寿终正寝', fateLevel: '天选打工魂', calamityCount: 1, locked: false, riskFlag: 'normal', updatedAt: now },
-      { id: 3, soulId: 3, soulName: '王大胆', expectedLifespan: 66, actualLifespan: 45, deathReason: '主动试胆', fateLevel: '困难模式', calamityCount: 9, locked: true, riskFlag: 'critical', updatedAt: now }
+      { id: 3, soulId: 3, soulName: '王大胆', expectedLifespan: 66, actualLifespan: 45, deathReason: '主动试胆', fateLevel: '困难模式', calamityCount: 9, locked: true, riskFlag: 'critical', updatedAt: now },
+      { id: 4, soulId: 4, soulName: '赵六六', expectedLifespan: 69, actualLifespan: 96, deathReason: '疑似被加寿', fateLevel: '关系命', calamityCount: 2, locked: true, riskFlag: 'critical', updatedAt: now },
+      { id: 5, soulId: 5, soulName: '钱多多', expectedLifespan: 54, actualLifespan: 54, deathReason: '许愿过度反噬', fateLevel: '财来财去', calamityCount: 6, locked: false, riskFlag: 'warning', updatedAt: now },
+      { id: 6, soulId: 6, soulName: '孙不睡', expectedLifespan: 82, actualLifespan: 82, deathReason: '连续加班三百年', fateLevel: '劳模命', calamityCount: 4, locked: false, riskFlag: 'normal', updatedAt: now },
+      { id: 7, soulId: 9, soulName: '郑有礼', expectedLifespan: 101, actualLifespan: 101, deathReason: '寿终正寝', fateLevel: '积善之家', calamityCount: 0, locked: false, riskFlag: 'normal', updatedAt: now }
     ],
     approvals: [
-      { id: 1, type: 'lifespan_change', targetId: 1, title: '寿命变更申请', status: 'pending', applicantId: 3, approverId: null, reason: '救人一命，建议补阳寿', resultNote: '', createdAt: now, updatedAt: now },
-      { id: 2, type: 'hell_review', targetId: 1, title: '地狱刑期复核', status: 'transferred', applicantId: 2, approverId: null, reason: '疑似判官手滑，多判三百年', resultNote: '', createdAt: now, updatedAt: now }
+      { id: 1, type: 'lifespan_change', targetId: 1, title: '寿命变更申请', status: 'pending', applicantId: 3, approverId: null, reason: '救人一命，建议补阳寿。', resultNote: '', createdAt: now, updatedAt: now },
+      { id: 2, type: 'hell_review', targetId: 1, title: '地狱刑期复核', status: 'transferred', applicantId: 2, approverId: null, reason: '疑似判官手滑，多判三百年。', resultNote: '转阎王二审', createdAt: now, updatedAt: now },
+      { id: 3, type: 'reincarnation_jump', targetId: 5, title: '投胎插队申请', status: 'approved', applicantId: 7, approverId: 1, reason: '前世连续扶老人过马路。', resultNote: '准予普通胎优先', createdAt: now, updatedAt: now },
+      { id: 4, type: 'capture_exception', targetId: 3, title: '勾魂异常复盘', status: 'rejected', applicantId: 4, approverId: 3, reason: '疑似飞升导致任务异常。', resultNote: '证据不足，继续蹲点', createdAt: now, updatedAt: now },
+      { id: 5, type: 'soup_extra_dose', targetId: 2, title: '孟婆汤加量申请', status: 'pending', applicantId: 5, approverId: null, reason: '记忆残留 38%，还记得上家密码。', resultNote: '', createdAt: now, updatedAt: now }
     ],
     reincarnations: [
       { id: 1, soulId: 2, soulName: '李小卷', targetRealm: '人间', priority: 8, soupStatus: 'pending', quotaType: '', status: 'queued', reviewNote: '', createdAt: now, updatedAt: now },
-      { id: 2, soulId: 1, soulName: '张三丰外卖版', targetRealm: '猫界', priority: 6, soupStatus: 'issued', quotaType: '普通胎', status: 'pending_soup', reviewNote: '建议保留方向感', createdAt: now, updatedAt: now }
+      { id: 2, soulId: 1, soulName: '张三丰外卖版', targetRealm: '猫界', priority: 6, soupStatus: 'issued', quotaType: '普通胎', status: 'pending_soup', reviewNote: '建议保留方向感。', createdAt: now, updatedAt: now },
+      { id: 3, soulId: 6, soulName: '孙不睡', targetRealm: '人间', priority: 9, soupStatus: 'pending', quotaType: '天才胎', status: 'reviewing', reviewNote: '记忆残留偏高，需复核。', createdAt: now, updatedAt: now },
+      { id: 4, soulId: 9, soulName: '郑有礼', targetRealm: '天界', priority: 10, soupStatus: 'issued', quotaType: '福报胎', status: 'completed', reviewNote: '功德充足，已完成轮回。', createdAt: now, updatedAt: now },
+      { id: 5, soulId: 8, soulName: '吴插队', targetRealm: '人间', priority: 1, soupStatus: 'pending', quotaType: '', status: 'rejected', reviewNote: '插队证据确凿。', createdAt: now, updatedAt: now },
+      { id: 6, soulId: 7, soulName: '周摸鱼', targetRealm: '鱼界', priority: 4, soupStatus: 'pending', quotaType: '清闲胎', status: 'approved', reviewNote: '待分配胎位。', createdAt: now, updatedAt: now }
     ],
     hellFloors: [
       { id: 1, floorNo: 1, name: '拔舌地狱', capacity: 300, occupancy: 286, equipmentStatus: '舌钳紧张', loadLevel: 'critical', updatedAt: now },
       { id: 2, floorNo: 2, name: '剪刀地狱', capacity: 260, occupancy: 120, equipmentStatus: '剪刀已磨', loadLevel: 'normal', updatedAt: now },
-      { id: 3, floorNo: 18, name: '终极加班地狱', capacity: 80, occupancy: 79, equipmentStatus: '工位不足', loadLevel: 'warning', updatedAt: now }
+      { id: 3, floorNo: 3, name: '铁树地狱', capacity: 240, occupancy: 199, equipmentStatus: '树枝需保养', loadLevel: 'warning', updatedAt: now },
+      { id: 4, floorNo: 4, name: '孽镜地狱', capacity: 220, occupancy: 160, equipmentStatus: '镜面高清', loadLevel: 'normal', updatedAt: now },
+      { id: 5, floorNo: 5, name: '蒸笼地狱', capacity: 210, occupancy: 205, equipmentStatus: '蒸汽过载', loadLevel: 'critical', updatedAt: now },
+      { id: 6, floorNo: 6, name: '铜柱地狱', capacity: 180, occupancy: 92, equipmentStatus: '温控正常', loadLevel: 'normal', updatedAt: now },
+      { id: 7, floorNo: 7, name: '刀山地狱', capacity: 190, occupancy: 151, equipmentStatus: '刀刃待检', loadLevel: 'warning', updatedAt: now },
+      { id: 8, floorNo: 8, name: '冰山地狱', capacity: 170, occupancy: 80, equipmentStatus: '制冷稳定', loadLevel: 'normal', updatedAt: now },
+      { id: 9, floorNo: 9, name: '油锅地狱', capacity: 160, occupancy: 142, equipmentStatus: '油温偏高', loadLevel: 'warning', updatedAt: now },
+      { id: 10, floorNo: 10, name: '牛坑地狱', capacity: 150, occupancy: 76, equipmentStatus: '牛群健康', loadLevel: 'normal', updatedAt: now },
+      { id: 11, floorNo: 11, name: '石压地狱', capacity: 150, occupancy: 138, equipmentStatus: '石块排队', loadLevel: 'warning', updatedAt: now },
+      { id: 12, floorNo: 12, name: '舂臼地狱', capacity: 140, occupancy: 69, equipmentStatus: '臼具正常', loadLevel: 'normal', updatedAt: now },
+      { id: 13, floorNo: 13, name: '血池地狱', capacity: 130, occupancy: 125, equipmentStatus: '池水需净化', loadLevel: 'critical', updatedAt: now },
+      { id: 14, floorNo: 14, name: '枉死地狱', capacity: 120, occupancy: 44, equipmentStatus: '申诉窗口开放', loadLevel: 'normal', updatedAt: now },
+      { id: 15, floorNo: 15, name: '磔刑地狱', capacity: 110, occupancy: 86, equipmentStatus: '刑架可用', loadLevel: 'warning', updatedAt: now },
+      { id: 16, floorNo: 16, name: '火山地狱', capacity: 100, occupancy: 63, equipmentStatus: '岩浆稳定', loadLevel: 'normal', updatedAt: now },
+      { id: 17, floorNo: 17, name: '石磨地狱', capacity: 90, occupancy: 72, equipmentStatus: '磨盘待润滑', loadLevel: 'warning', updatedAt: now },
+      { id: 18, floorNo: 18, name: '终极加班地狱', capacity: 80, occupancy: 79, equipmentStatus: '工位不足', loadLevel: 'critical', updatedAt: now }
     ],
     hellSentences: [
       { id: 1, soulId: 3, soulName: '王大胆', floorId: 1, floorName: '拔舌地狱', crimeType: '造谣地府 KPI', sentenceDays: 365, painLevel: 7, reviewStatus: 'none', equipmentId: 'BT-001', createdAt: now, updatedAt: now },
-      { id: 2, soulId: 1, soulName: '张三丰外卖版', floorId: 3, floorName: '终极加班地狱', crimeType: '迟到早退', sentenceDays: 18, painLevel: 4, reviewStatus: 'reviewing', equipmentId: 'OT-996', createdAt: now, updatedAt: now }
+      { id: 2, soulId: 1, soulName: '张三丰外卖版', floorId: 18, floorName: '终极加班地狱', crimeType: '迟到早退', sentenceDays: 18, painLevel: 4, reviewStatus: 'reviewing', equipmentId: 'OT-996', createdAt: now, updatedAt: now },
+      { id: 3, soulId: 10, soulName: '冯造谣', floorId: 4, floorName: '孽镜地狱', crimeType: '朋友圈谣言日更', sentenceDays: 720, painLevel: 8, reviewStatus: 'none', equipmentId: 'MJ-404', createdAt: now, updatedAt: now },
+      { id: 4, soulId: 8, soulName: '吴插队', floorId: 2, floorName: '剪刀地狱', crimeType: '投胎黄牛', sentenceDays: 180, painLevel: 6, reviewStatus: 'approved', equipmentId: 'JD-002', createdAt: now, updatedAt: now },
+      { id: 5, soulId: 5, soulName: '钱多多', floorId: 13, floorName: '血池地狱', crimeType: '许愿不还愿', sentenceDays: 99, painLevel: 5, reviewStatus: 'rejected', equipmentId: 'XC-013', createdAt: now, updatedAt: now }
     ],
     wishes: [
       { id: 1, title: '一夜暴富', wishType: 'wealth', requesterName: '赵小财', incenseAmount: 12, meritScore: 3, status: 'pending', assignedDeity: '', resultNote: '', createdAt: now, updatedAt: now },
-      { id: 2, title: '考试全会', wishType: 'study', requesterName: '孙卷王', incenseAmount: 6, meritScore: 18, status: 'routed', assignedDeity: '文昌帝君', resultNote: '', createdAt: now, updatedAt: now }
+      { id: 2, title: '考试全会', wishType: 'study', requesterName: '孙卷王', incenseAmount: 6, meritScore: 18, status: 'routed', assignedDeity: '文昌帝君', resultNote: '', createdAt: now, updatedAt: now },
+      { id: 3, title: '老板少开会', wishType: 'work', requesterName: '周工位', incenseAmount: 3, meritScore: 9, status: 'resolved', assignedDeity: '太白金星', resultNote: '建议先关掉会议提醒。', createdAt: now, updatedAt: now },
+      { id: 4, title: '前任后悔', wishType: 'love', requesterName: '钱小敏', incenseAmount: 1, meritScore: 0, status: 'rejected', assignedDeity: '月老', resultNote: '不符合天规，建议自省。', createdAt: now, updatedAt: now },
+      { id: 5, title: '减肥不运动', wishType: 'health', requesterName: '吴轻松', incenseAmount: 8, meritScore: 5, status: 'pending', assignedDeity: '', resultNote: '', createdAt: now, updatedAt: now },
+      { id: 6, title: '代码一遍过', wishType: 'career', requesterName: '冯程序', incenseAmount: 20, meritScore: 22, status: 'routed', assignedDeity: '鲁班祖师', resultNote: '已转技术神组。', createdAt: now, updatedAt: now }
     ],
     soupInventory: [
       { id: 1, name: '经典忘忧汤', stock: 120, warningStock: 30, formulaNote: '标准版，适合大多数投胎场景', updatedAt: now },
-      { id: 2, name: '低糖无梦汤', stock: 18, warningStock: 20, formulaNote: '控糖魂魄专用', updatedAt: now }
+      { id: 2, name: '低糖无梦汤', stock: 18, warningStock: 20, formulaNote: '控糖魂魄专用', updatedAt: now },
+      { id: 3, name: '加浓失忆汤', stock: 42, warningStock: 50, formulaNote: '记忆残留高于 30% 时推荐', updatedAt: now },
+      { id: 4, name: '福报轻盈汤', stock: 88, warningStock: 25, formulaNote: '功德高者专用，口感清淡', updatedAt: now },
+      { id: 5, name: '困难模式特调', stock: 9, warningStock: 15, formulaNote: '投胎困难模式前置饮品', updatedAt: now }
     ],
     soupRecords: [
-      { id: 1, soulId: 2, soulName: '李小卷', orderId: 2, inventoryId: 1, inventoryName: '经典忘忧汤', dose: 1, memoryAfter: 0, operatorId: 5, createdAt: now }
+      { id: 1, soulId: 2, soulName: '李小卷', orderId: 1, inventoryId: 1, inventoryName: '经典忘忧汤', dose: 1, memoryAfter: 0, operatorId: 5, createdAt: now },
+      { id: 2, soulId: 1, soulName: '张三丰外卖版', orderId: 2, inventoryId: 2, inventoryName: '低糖无梦汤', dose: 1, memoryAfter: 3, operatorId: 5, createdAt: now },
+      { id: 3, soulId: 9, soulName: '郑有礼', orderId: 4, inventoryId: 4, inventoryName: '福报轻盈汤', dose: 1, memoryAfter: 0, operatorId: 5, createdAt: now },
+      { id: 4, soulId: 6, soulName: '孙不睡', orderId: 3, inventoryId: 3, inventoryName: '加浓失忆汤', dose: 2, memoryAfter: 8, operatorId: 5, createdAt: now }
     ],
     auditLogs: [
       { id: 1, actorId: 3, action: 'life_book.freeze', targetType: 'life_book', targetId: 3, note: '高危寿命记录冻结', createdAt: now },
-      { id: 2, actorId: 5, action: 'soup.issue', targetType: 'reincarnation', targetId: 2, note: '孟婆汤已发放', createdAt: now }
+      { id: 2, actorId: 5, action: 'soup.issue', targetType: 'reincarnation', targetId: 2, note: '孟婆汤已发放', createdAt: now },
+      { id: 3, actorId: 1, action: 'approval.approved', targetType: 'approval', targetId: 3, note: '投胎插队已通过，限普通胎。', createdAt: now },
+      { id: 4, actorId: 4, action: 'capture.exception', targetType: 'capture_task', targetId: 3, note: '疑似飞升导致勾魂异常。', createdAt: now },
+      { id: 5, actorId: 2, action: 'hell.dispatch', targetType: 'hell_floor', targetId: 1, note: '一层向二层分流 10 魂。', createdAt: now },
+      { id: 6, actorId: 8, action: 'audit.warning', targetType: 'life_book', targetId: 4, note: '赵六六阳寿异常，进入审计队列。', createdAt: now },
+      { id: 7, actorId: 7, action: 'wish.route', targetType: 'wish', targetId: 6, note: '代码一遍过愿望转鲁班祖师。', createdAt: now }
     ],
-    nextApprovalId: 3,
-    nextAuditLogId: 3,
-    nextSoupRecordId: 2
+    nextApprovalId: 6,
+    nextAuditLogId: 8,
+    nextSoupRecordId: 5
   }
 }
