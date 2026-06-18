@@ -1,31 +1,60 @@
 <template>
-  <view class="page stack detail-page" v-if="task">
-    <view class="detail-hero">
-      <view class="detail-hero__top">
+  <view class="page stack detail-page capture-detail" v-if="task">
+    <view class="capture-hero">
+      <view class="capture-hero__map">
+        <view class="capture-hero__scan"></view>
+        <view class="capture-hero__pin"></view>
+      </view>
+      <view class="capture-hero__top">
         <view>
-          <text class="detail-hero__eyebrow">CAPTURE TASK #{{ task.id }}</text>
-          <text class="detail-hero__title">{{ task.soulName }}</text>
+          <text class="capture-hero__eyebrow">NIGHT PATROL / TASK #{{ task.id }}</text>
+          <text class="capture-hero__title">{{ task.soulName }}</text>
         </view>
         <StatusTag :value="task.status" />
       </view>
-      <text class="detail-hero__desc">{{ task.location }}</text>
-      <view class="detail-hero__stats">
-        <view class="detail-stat">
-          <text class="detail-stat__label">执行人</text>
-          <text class="detail-stat__value">{{ task.assigneeName || '待派单' }}</text>
+      <text class="capture-hero__desc">{{ task.location }}</text>
+      <view class="capture-coordinates">
+        <text>魂魄 #{{ task.soulId }}</text>
+        <text>{{ shortTime(task.scheduledTime) }}</text>
+        <text>{{ task.exceptionType || 'NO ALERT' }}</text>
+      </view>
+      <view class="capture-hero__stats">
+        <view class="capture-stat">
+          <text class="capture-stat__label">夜巡鬼差</text>
+          <text class="capture-stat__value">{{ task.assigneeName || '待派单' }}</text>
         </view>
-        <view class="detail-stat">
-          <text class="detail-stat__label">计划</text>
-          <text class="detail-stat__value">{{ shortTime(task.scheduledTime) }}</text>
+        <view class="capture-stat">
+          <text class="capture-stat__label">计划窗口</text>
+          <text class="capture-stat__value">{{ shortTime(task.scheduledTime) }}</text>
         </view>
-        <view class="detail-stat">
-          <text class="detail-stat__label">实际</text>
-          <text class="detail-stat__value">{{ shortTime(task.actualTime) }}</text>
+        <view class="capture-stat">
+          <text class="capture-stat__label">回执时间</text>
+          <text class="capture-stat__value">{{ shortTime(task.actualTime) }}</text>
         </view>
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="capture-route">
+      <view class="capture-route__node">
+        <text class="capture-route__dot"></text>
+        <text class="capture-route__title">定位</text>
+        <text class="capture-route__desc">{{ task.location }}</text>
+      </view>
+      <view class="capture-route__line"></view>
+      <view class="capture-route__node">
+        <text class="capture-route__dot capture-route__dot--active"></text>
+        <text class="capture-route__title">勾魂</text>
+        <text class="capture-route__desc">{{ actionHint }}</text>
+      </view>
+      <view class="capture-route__line"></view>
+      <view class="capture-route__node">
+        <text class="capture-route__dot"></text>
+        <text class="capture-route__title">归档</text>
+        <text class="capture-route__desc">{{ task.actualTime ? displayTime(task.actualTime) : '等待回执' }}</text>
+      </view>
+    </view>
+
+    <view class="detail-card capture-card">
       <text class="detail-card__title">任务档案</text>
       <view class="detail-grid">
         <view class="detail-field">
@@ -51,7 +80,7 @@
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="detail-card capture-card">
       <text class="detail-card__title">执行闭环</text>
       <view class="process-list">
         <view v-for="step in processSteps" :key="step.title" class="process-row">
@@ -64,7 +93,7 @@
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="detail-card capture-card">
       <text class="detail-card__title">异常与备注</text>
       <view class="detail-grid">
         <view class="detail-field">
@@ -175,5 +204,202 @@ onShow(load)
 <style scoped>
 .detail-page {
   padding-bottom: 140rpx;
+}
+
+.capture-detail {
+  background:
+    radial-gradient(circle at 18% 0%, rgba(74, 111, 165, 0.18), transparent 28%),
+    linear-gradient(180deg, #111827 0%, #1f2937 32%, #f7f1e3 32%, #f7f1e3 100%);
+}
+
+.capture-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 390rpx;
+  padding: 26rpx;
+  color: #f8fafc;
+  border: 1rpx solid rgba(148, 163, 184, 0.32);
+  border-radius: 30rpx;
+  background:
+    linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1rpx, transparent 1rpx),
+    linear-gradient(0deg, rgba(148, 163, 184, 0.08) 1rpx, transparent 1rpx),
+    radial-gradient(circle at 76% 18%, rgba(34, 197, 94, 0.18), transparent 26%),
+    linear-gradient(135deg, #020617, #172554 56%, #111827);
+  background-size: 42rpx 42rpx, 42rpx 42rpx, auto, auto;
+  box-shadow: 0 22rpx 44rpx rgba(2, 6, 23, 0.28);
+}
+
+.capture-hero__map {
+  position: absolute;
+  right: -42rpx;
+  top: -26rpx;
+  width: 310rpx;
+  height: 310rpx;
+  border: 1rpx solid rgba(125, 211, 252, 0.28);
+  border-radius: 50%;
+}
+
+.capture-hero__scan {
+  position: absolute;
+  inset: 42rpx;
+  border: 1rpx dashed rgba(125, 211, 252, 0.34);
+  border-radius: 50%;
+}
+
+.capture-hero__pin {
+  position: absolute;
+  left: 128rpx;
+  top: 132rpx;
+  width: 26rpx;
+  height: 26rpx;
+  border: 8rpx solid rgba(248, 113, 113, 0.9);
+  border-radius: 50%;
+  background: #fff7ed;
+  box-shadow: 0 0 26rpx rgba(248, 113, 113, 0.7);
+}
+
+.capture-hero__top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.capture-hero__eyebrow {
+  display: block;
+  color: #7dd3fc;
+  font-size: 20rpx;
+  font-weight: 900;
+  letter-spacing: 2rpx;
+}
+
+.capture-hero__title {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 48rpx;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.capture-hero__desc {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 72%;
+  margin-top: 18rpx;
+  color: rgba(248, 250, 252, 0.76);
+  font-size: 25rpx;
+  line-height: 1.45;
+}
+
+.capture-coordinates {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 22rpx;
+}
+
+.capture-coordinates text {
+  padding: 8rpx 12rpx;
+  color: #bae6fd;
+  border: 1rpx solid rgba(125, 211, 252, 0.22);
+  border-radius: 999rpx;
+  background: rgba(14, 165, 233, 0.1);
+  font-size: 20rpx;
+  font-weight: 800;
+}
+
+.capture-hero__stats {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10rpx;
+  margin-top: 26rpx;
+}
+
+.capture-stat {
+  min-width: 0;
+  padding: 14rpx 12rpx;
+  border-left: 4rpx solid #38bdf8;
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.capture-stat__label {
+  display: block;
+  color: rgba(226, 232, 240, 0.62);
+  font-size: 20rpx;
+}
+
+.capture-stat__value {
+  display: block;
+  overflow: hidden;
+  margin-top: 8rpx;
+  color: #f8fafc;
+  font-size: 25rpx;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.capture-route {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34rpx minmax(0, 1fr) 34rpx minmax(0, 1fr);
+  align-items: stretch;
+  padding: 20rpx;
+  border: 1rpx solid rgba(56, 189, 248, 0.22);
+  border-radius: 22rpx;
+  background: #f8fafc;
+  box-shadow: 0 12rpx 30rpx rgba(15, 23, 42, 0.1);
+}
+
+.capture-route__node {
+  min-width: 0;
+}
+
+.capture-route__dot {
+  display: block;
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+  background: #94a3b8;
+}
+
+.capture-route__dot--active {
+  background: #ef4444;
+  box-shadow: 0 0 18rpx rgba(239, 68, 68, 0.7);
+}
+
+.capture-route__title {
+  display: block;
+  margin-top: 10rpx;
+  color: #0f172a;
+  font-size: 25rpx;
+  font-weight: 900;
+}
+
+.capture-route__desc {
+  display: block;
+  overflow: hidden;
+  margin-top: 6rpx;
+  color: #475569;
+  font-size: 21rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.capture-route__line {
+  align-self: center;
+  height: 2rpx;
+  background: linear-gradient(90deg, #94a3b8, #38bdf8);
+}
+
+.capture-card {
+  border-color: rgba(56, 189, 248, 0.24);
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
 }
 </style>

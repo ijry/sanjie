@@ -1,31 +1,40 @@
 <template>
-  <view class="page stack detail-page" v-if="item">
-    <view class="detail-hero">
-      <view class="detail-hero__top">
+  <view class="page stack detail-page wish-detail" v-if="item">
+    <view class="wish-paper">
+      <view class="wish-paper__ribbon">{{ wishTypeText }}</view>
+      <view class="wish-paper__top">
         <view>
-          <text class="detail-hero__eyebrow">WISH TICKET #{{ item.id }}</text>
-          <text class="detail-hero__title">{{ item.title }}</text>
+          <text class="wish-paper__eyebrow">INCENSE REQUEST #{{ item.id }}</text>
+          <text class="wish-paper__title">{{ item.title }}</text>
         </view>
         <StatusTag :value="item.status" />
       </view>
-      <text class="detail-hero__desc">{{ item.requesterName }} 发起 {{ wishTypeText }} 愿望，{{ decisionTone }}</text>
-      <view class="detail-hero__stats">
-        <view class="detail-stat">
-          <text class="detail-stat__label">香火</text>
-          <text class="detail-stat__value">{{ item.incenseAmount }}</text>
+      <text class="wish-paper__desc">{{ item.requesterName }} 发起 {{ wishTypeText }} 愿望，{{ decisionTone }}</text>
+      <view class="wish-scale">
+        <view class="wish-scale__item">
+          <text class="wish-scale__value">{{ item.incenseAmount }}</text>
+          <text class="wish-scale__label">香火</text>
         </view>
-        <view class="detail-stat">
-          <text class="detail-stat__label">功德</text>
-          <text class="detail-stat__value">{{ item.meritScore }}</text>
+        <view class="wish-scale__beam">
+          <text :style="{ width: incenseWeight }"></text>
         </view>
-        <view class="detail-stat">
-          <text class="detail-stat__label">承办</text>
-          <text class="detail-stat__value">{{ item.assignedDeity || '待分派' }}</text>
+        <view class="wish-scale__item">
+          <text class="wish-scale__value">{{ item.meritScore }}</text>
+          <text class="wish-scale__label">功德</text>
         </view>
+      </view>
+      <view class="wish-assignee">
+        <text class="wish-assignee__label">承办神仙</text>
+        <text class="wish-assignee__value">{{ item.assignedDeity || '待分派' }}</text>
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="wish-verdict">
+      <text class="wish-verdict__title">{{ priorityHint }}</text>
+      <text class="wish-verdict__desc">{{ jokeHint }}</text>
+    </view>
+
+    <view class="detail-card wish-card">
       <text class="detail-card__title">愿望档案</text>
       <view class="detail-grid">
         <view class="detail-field">
@@ -51,7 +60,7 @@
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="detail-card wish-card">
       <text class="detail-card__title">处理流程</text>
       <view class="process-list">
         <view v-for="step in processSteps" :key="step.title" class="process-row">
@@ -64,7 +73,7 @@
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="detail-card wish-card">
       <text class="detail-card__title">判定建议</text>
       <view class="detail-grid">
         <view class="detail-field">
@@ -130,6 +139,11 @@ const wishTypeText = computed(() => {
 })
 
 const statusText = computed(() => labelOf(item.value?.status))
+
+const incenseWeight = computed(() => {
+  const total = Math.max(1, Number(item.value?.incenseAmount || 0) + Math.max(0, Number(item.value?.meritScore || 0)))
+  return `${Math.min(92, Math.max(8, Math.round((Number(item.value?.incenseAmount || 0) / total) * 100)))}%`
+})
 
 const decisionTone = computed(() => {
   if (!item.value) return ''
@@ -206,5 +220,178 @@ onShow(load)
 <style scoped>
 .detail-page {
   padding-bottom: 140rpx;
+}
+
+.wish-detail {
+  background:
+    radial-gradient(circle at 88% 0%, rgba(234, 179, 8, 0.2), transparent 30%),
+    linear-gradient(180deg, #fff7ed 0%, #f7f1e3 48%, #f7f1e3 100%);
+}
+
+.wish-paper {
+  position: relative;
+  overflow: hidden;
+  padding: 30rpx;
+  border: 1rpx solid rgba(217, 119, 6, 0.22);
+  border-radius: 34rpx 34rpx 12rpx 12rpx;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(251, 191, 36, 0.2), transparent 20%),
+    linear-gradient(135deg, #fffbeb, #fff7ed 58%, #fef3c7);
+  box-shadow: 0 18rpx 42rpx rgba(217, 119, 6, 0.12);
+}
+
+.wish-paper::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 16rpx;
+  background:
+    linear-gradient(135deg, transparent 8rpx, rgba(217, 119, 6, 0.18) 0) 0 0 / 24rpx 16rpx repeat-x,
+    linear-gradient(225deg, transparent 8rpx, rgba(217, 119, 6, 0.18) 0) 0 0 / 24rpx 16rpx repeat-x;
+}
+
+.wish-paper__ribbon {
+  position: absolute;
+  right: -46rpx;
+  top: 32rpx;
+  width: 190rpx;
+  padding: 8rpx 0;
+  color: #fffaf0;
+  background: #d97706;
+  font-size: 22rpx;
+  font-weight: 900;
+  text-align: center;
+  transform: rotate(34deg);
+}
+
+.wish-paper__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.wish-paper__eyebrow {
+  display: block;
+  color: #d97706;
+  font-size: 20rpx;
+  font-weight: 900;
+  letter-spacing: 2rpx;
+}
+
+.wish-paper__title {
+  display: block;
+  margin-top: 8rpx;
+  color: #422006;
+  font-size: 50rpx;
+  font-weight: 900;
+  line-height: 1.13;
+}
+
+.wish-paper__desc {
+  display: block;
+  margin-top: 18rpx;
+  color: #78350f;
+  font-size: 25rpx;
+  line-height: 1.5;
+}
+
+.wish-scale {
+  display: grid;
+  grid-template-columns: 116rpx minmax(0, 1fr) 116rpx;
+  gap: 14rpx;
+  align-items: center;
+  margin-top: 26rpx;
+}
+
+.wish-scale__item {
+  padding: 14rpx 10rpx;
+  border: 1rpx solid rgba(217, 119, 6, 0.18);
+  border-radius: 18rpx;
+  background: rgba(255, 250, 240, 0.74);
+  text-align: center;
+}
+
+.wish-scale__value {
+  display: block;
+  color: #92400e;
+  font-size: 34rpx;
+  font-weight: 900;
+}
+
+.wish-scale__label {
+  display: block;
+  margin-top: 4rpx;
+  color: #a16207;
+  font-size: 20rpx;
+}
+
+.wish-scale__beam {
+  height: 18rpx;
+  overflow: hidden;
+  border-radius: 999rpx;
+  background: rgba(217, 119, 6, 0.16);
+}
+
+.wish-scale__beam text {
+  display: block;
+  height: 100%;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+}
+
+.wish-assignee {
+  display: flex;
+  justify-content: space-between;
+  gap: 12rpx;
+  margin-top: 20rpx;
+  padding: 16rpx;
+  border: 1rpx dashed rgba(217, 119, 6, 0.3);
+  border-radius: 16rpx;
+  background: rgba(255, 250, 240, 0.64);
+}
+
+.wish-assignee__label {
+  color: #92400e;
+  font-size: 23rpx;
+  font-weight: 800;
+}
+
+.wish-assignee__value {
+  overflow: hidden;
+  color: #422006;
+  font-size: 24rpx;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wish-verdict {
+  padding: 20rpx;
+  border: 1rpx solid rgba(217, 119, 6, 0.2);
+  border-radius: 22rpx;
+  background: linear-gradient(135deg, #422006, #92400e);
+  color: #fffaf0;
+}
+
+.wish-verdict__title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 900;
+}
+
+.wish-verdict__desc {
+  display: block;
+  margin-top: 8rpx;
+  color: rgba(255, 250, 240, 0.76);
+  font-size: 24rpx;
+  line-height: 1.45;
+}
+
+.wish-card {
+  border-color: rgba(217, 119, 6, 0.18);
+  background: rgba(255, 250, 240, 0.94);
 }
 </style>

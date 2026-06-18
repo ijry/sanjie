@@ -1,31 +1,47 @@
 <template>
-  <view class="page stack detail-page" v-if="item">
-    <view class="detail-hero">
-      <view class="detail-hero__top">
+  <view class="page stack detail-page life-detail" v-if="item">
+    <view class="life-scroll">
+      <view class="life-scroll__seal">{{ item.locked ? '封' : '命' }}</view>
+      <view class="life-scroll__top">
         <view>
-          <text class="detail-hero__eyebrow">LIFE BOOK #{{ item.id }}</text>
-          <text class="detail-hero__title">{{ item.soulName }}</text>
+          <text class="life-scroll__eyebrow">LIFE BOOK ARCHIVE #{{ item.id }}</text>
+          <text class="life-scroll__title">{{ item.soulName }}</text>
         </view>
         <StatusTag :value="item.riskFlag" />
       </view>
-      <text class="detail-hero__desc">{{ lifeSummary }}</text>
-      <view class="detail-hero__stats">
-        <view class="detail-stat">
-          <text class="detail-stat__label">原定</text>
-          <text class="detail-stat__value">{{ item.expectedLifespan }} 岁</text>
+      <text class="life-scroll__desc">{{ lifeSummary }}</text>
+      <view class="lifespan-ruler">
+        <view class="lifespan-ruler__track">
+          <view class="lifespan-ruler__expected" :style="{ width: expectedPercent }"></view>
+          <view class="lifespan-ruler__actual" :style="{ width: actualPercent }"></view>
         </view>
-        <view class="detail-stat">
-          <text class="detail-stat__label">当前</text>
-          <text class="detail-stat__value">{{ item.actualLifespan }} 岁</text>
+        <view class="lifespan-ruler__labels">
+          <text>0</text>
+          <text>60</text>
+          <text>120</text>
         </view>
-        <view class="detail-stat">
-          <text class="detail-stat__label">偏差</text>
-          <text class="detail-stat__value">{{ lifespanDeltaText }}</text>
+      </view>
+      <view class="life-scroll__stats">
+        <view class="life-stat">
+          <text class="life-stat__label">原定阳寿</text>
+          <text class="life-stat__value">{{ item.expectedLifespan }} 岁</text>
+        </view>
+        <view class="life-stat">
+          <text class="life-stat__label">当前阳寿</text>
+          <text class="life-stat__value">{{ item.actualLifespan }} 岁</text>
+        </view>
+        <view class="life-stat">
+          <text class="life-stat__label">寿数偏差</text>
+          <text class="life-stat__value">{{ lifespanDeltaText }}</text>
         </view>
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="life-warning-strip" :class="{ 'life-warning-strip--locked': item.locked }">
+      <text>{{ item.locked ? '此命簿已加封，所有变更必须走审批。' : '此命簿未加封，可先冻结再提交改寿申请。' }}</text>
+    </view>
+
+    <view class="detail-card life-card">
       <text class="detail-card__title">命簿档案</text>
       <view class="detail-grid">
         <view class="detail-field">
@@ -59,7 +75,7 @@
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="detail-card life-card">
       <text class="detail-card__title">处置流程</text>
       <view class="process-list">
         <view v-for="step in processSteps" :key="step.title" class="process-row">
@@ -72,7 +88,7 @@
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="detail-card life-card">
       <text class="detail-card__title">风险提示</text>
       <view class="detail-grid">
         <view class="detail-field">
@@ -90,7 +106,7 @@
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="detail-card life-audit-card">
       <text class="detail-card__title">审计记录</text>
       <EmptyState v-if="logs.length === 0" text="暂无审计记录" />
       <view v-else class="mini-list">
@@ -137,6 +153,9 @@ const lifespanDeltaText = computed(() => {
   if (lifespanDelta.value === 0) return '持平'
   return `${lifespanDelta.value > 0 ? '+' : ''}${lifespanDelta.value} 年`
 })
+
+const expectedPercent = computed(() => `${Math.min(100, Math.round((Number(item.value?.expectedLifespan || 0) / 120) * 100))}%`)
+const actualPercent = computed(() => `${Math.min(100, Math.round((Number(item.value?.actualLifespan || 0) / 120) * 100))}%`)
 
 const riskText = computed(() => labelOf(item.value?.riskFlag))
 
@@ -218,5 +237,178 @@ onShow(load)
 <style scoped>
 .detail-page {
   padding-bottom: 140rpx;
+}
+
+.life-detail {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(180, 83, 9, 0.12), transparent 25%),
+    linear-gradient(180deg, #fef3c7 0%, #f7f1e3 44%, #f7f1e3 100%);
+}
+
+.life-scroll {
+  position: relative;
+  overflow: hidden;
+  padding: 32rpx 28rpx;
+  border: 2rpx solid rgba(120, 53, 15, 0.18);
+  border-radius: 10rpx 34rpx 10rpx 34rpx;
+  background:
+    linear-gradient(90deg, rgba(120, 53, 15, 0.05) 1rpx, transparent 1rpx),
+    linear-gradient(0deg, rgba(120, 53, 15, 0.05) 1rpx, transparent 1rpx),
+    linear-gradient(135deg, #fff7ed, #fef3c7);
+  background-size: 34rpx 34rpx;
+  box-shadow: 0 18rpx 38rpx rgba(120, 53, 15, 0.14);
+}
+
+.life-scroll__seal {
+  position: absolute;
+  right: 26rpx;
+  top: 30rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 126rpx;
+  height: 126rpx;
+  color: rgba(169, 50, 38, 0.26);
+  border: 8rpx double rgba(169, 50, 38, 0.24);
+  border-radius: 50%;
+  font-size: 64rpx;
+  font-weight: 900;
+  transform: rotate(13deg);
+}
+
+.life-scroll__top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.life-scroll__eyebrow {
+  display: block;
+  color: #92400e;
+  font-size: 20rpx;
+  font-weight: 900;
+  letter-spacing: 2rpx;
+}
+
+.life-scroll__title {
+  display: block;
+  margin-top: 8rpx;
+  color: #3f2a12;
+  font-size: 50rpx;
+  font-weight: 900;
+  line-height: 1.12;
+}
+
+.life-scroll__desc {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 72%;
+  margin-top: 18rpx;
+  color: #7c2d12;
+  font-size: 25rpx;
+  line-height: 1.5;
+}
+
+.lifespan-ruler {
+  position: relative;
+  z-index: 1;
+  margin-top: 28rpx;
+}
+
+.lifespan-ruler__track {
+  position: relative;
+  height: 30rpx;
+  overflow: hidden;
+  border: 1rpx solid rgba(120, 53, 15, 0.18);
+  border-radius: 999rpx;
+  background: rgba(255, 250, 240, 0.82);
+}
+
+.lifespan-ruler__expected,
+.lifespan-ruler__actual {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+
+.lifespan-ruler__expected {
+  background: rgba(180, 83, 9, 0.28);
+}
+
+.lifespan-ruler__actual {
+  height: 12rpx;
+  top: 9rpx;
+  background: #a93226;
+}
+
+.lifespan-ruler__labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8rpx;
+  color: #92400e;
+  font-size: 19rpx;
+  font-weight: 800;
+}
+
+.life-scroll__stats {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10rpx;
+  margin-top: 18rpx;
+}
+
+.life-stat {
+  min-width: 0;
+  padding: 14rpx 12rpx;
+  border: 1rpx solid rgba(120, 53, 15, 0.16);
+  background: rgba(255, 250, 240, 0.7);
+}
+
+.life-stat__label {
+  display: block;
+  color: #92400e;
+  font-size: 20rpx;
+}
+
+.life-stat__value {
+  display: block;
+  margin-top: 7rpx;
+  color: #3f2a12;
+  font-size: 26rpx;
+  font-weight: 900;
+}
+
+.life-warning-strip {
+  padding: 18rpx 20rpx;
+  color: #7c2d12;
+  border-left: 8rpx solid #b45309;
+  border-radius: 16rpx;
+  background: #fffbeb;
+  font-size: 25rpx;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.life-warning-strip--locked {
+  color: #7f1d1d;
+  border-left-color: #a93226;
+  background: #fef2f2;
+}
+
+.life-card,
+.life-audit-card {
+  border-color: rgba(120, 53, 15, 0.18);
+  background: rgba(255, 250, 240, 0.94);
+}
+
+.life-audit-card {
+  border-style: dashed;
 }
 </style>

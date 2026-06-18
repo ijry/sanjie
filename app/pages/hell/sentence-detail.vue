@@ -1,31 +1,42 @@
 <template>
-  <view class="page stack detail-page" v-if="item">
-    <view class="detail-hero">
-      <view class="detail-hero__top">
+  <view class="page stack detail-page hell-detail" v-if="item">
+    <view class="hell-console">
+      <view class="hell-console__glow"></view>
+      <view class="hell-console__top">
         <view>
-          <text class="detail-hero__eyebrow">HELL SENTENCE #{{ item.id }}</text>
-          <text class="detail-hero__title">{{ item.soulName }}</text>
+          <text class="hell-console__eyebrow">INFERNO CONTROL / SENTENCE #{{ item.id }}</text>
+          <text class="hell-console__title">{{ item.soulName }}</text>
         </view>
         <StatusTag :value="item.reviewStatus" />
       </view>
-      <text class="detail-hero__desc">{{ item.floorName }} · {{ item.crimeType }} · {{ reviewText }}</text>
-      <view class="detail-hero__stats">
-        <view class="detail-stat">
-          <text class="detail-stat__label">刑期</text>
-          <text class="detail-stat__value">{{ item.sentenceDays }} 天</text>
+      <text class="hell-console__desc">{{ item.floorName }} · {{ item.crimeType }} · {{ reviewText }}</text>
+      <view class="hell-gauges">
+        <view class="hell-gauge">
+          <text class="hell-gauge__value">{{ item.sentenceDays }}</text>
+          <text class="hell-gauge__label">刑期 / 天</text>
         </view>
-        <view class="detail-stat">
-          <text class="detail-stat__label">痛感</text>
-          <text class="detail-stat__value">{{ item.painLevel }}/10</text>
+        <view class="hell-gauge hell-gauge--hot">
+          <text class="hell-gauge__value">{{ item.painLevel }}</text>
+          <text class="hell-gauge__label">痛感 / 10</text>
         </view>
-        <view class="detail-stat">
-          <text class="detail-stat__label">设备</text>
-          <text class="detail-stat__value">{{ item.equipmentId }}</text>
+        <view class="hell-gauge">
+          <text class="hell-gauge__value">{{ item.equipmentId }}</text>
+          <text class="hell-gauge__label">设备编号</text>
         </view>
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="hell-warning-panel">
+      <view class="hell-warning-panel__bars">
+        <text></text><text></text><text></text>
+      </view>
+      <view>
+        <text class="hell-warning-panel__title">{{ sentenceLevel }} · {{ painHint }}</text>
+        <text class="hell-warning-panel__desc">{{ reviewHint }}</text>
+      </view>
+    </view>
+
+    <view class="detail-card hell-card">
       <text class="detail-card__title">刑期档案</text>
       <view class="detail-grid">
         <view class="detail-field">
@@ -59,7 +70,7 @@
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="detail-card hell-card">
       <text class="detail-card__title">执行流程</text>
       <view class="process-list">
         <view v-for="step in processSteps" :key="step.title" class="process-row">
@@ -72,7 +83,7 @@
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="detail-card hell-card">
       <text class="detail-card__title">复核建议</text>
       <view class="detail-grid">
         <view class="detail-field">
@@ -171,5 +182,167 @@ onShow(load)
 <style scoped>
 .detail-page {
   padding-bottom: 140rpx;
+}
+
+.hell-detail {
+  background:
+    radial-gradient(circle at 80% 0%, rgba(239, 68, 68, 0.2), transparent 26%),
+    linear-gradient(180deg, #0f0a08 0%, #2b0f0b 38%, #f7f1e3 38%, #f7f1e3 100%);
+}
+
+.hell-console {
+  position: relative;
+  overflow: hidden;
+  padding: 28rpx;
+  color: #fff7ed;
+  border: 1rpx solid rgba(248, 113, 113, 0.28);
+  border-radius: 28rpx;
+  background:
+    linear-gradient(90deg, rgba(248, 113, 113, 0.08) 1rpx, transparent 1rpx),
+    linear-gradient(0deg, rgba(248, 113, 113, 0.08) 1rpx, transparent 1rpx),
+    radial-gradient(circle at 80% 20%, rgba(249, 115, 22, 0.3), transparent 28%),
+    linear-gradient(135deg, #120806, #450a0a 56%, #111827);
+  background-size: 36rpx 36rpx, 36rpx 36rpx, auto, auto;
+  box-shadow: 0 22rpx 46rpx rgba(69, 10, 10, 0.3);
+}
+
+.hell-console__glow {
+  position: absolute;
+  right: -60rpx;
+  bottom: -80rpx;
+  width: 260rpx;
+  height: 260rpx;
+  border-radius: 50%;
+  background: rgba(249, 115, 22, 0.24);
+  filter: blur(8rpx);
+}
+
+.hell-console__top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.hell-console__eyebrow {
+  display: block;
+  color: #fb923c;
+  font-size: 20rpx;
+  font-weight: 900;
+  letter-spacing: 2rpx;
+}
+
+.hell-console__title {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 48rpx;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.hell-console__desc {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin-top: 16rpx;
+  color: rgba(255, 247, 237, 0.76);
+  font-size: 25rpx;
+  line-height: 1.45;
+}
+
+.hell-gauges {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10rpx;
+  margin-top: 24rpx;
+}
+
+.hell-gauge {
+  min-width: 0;
+  padding: 18rpx 12rpx;
+  border: 1rpx solid rgba(251, 146, 60, 0.3);
+  border-radius: 16rpx;
+  background: rgba(15, 23, 42, 0.56);
+}
+
+.hell-gauge--hot {
+  background: linear-gradient(135deg, rgba(127, 29, 29, 0.84), rgba(249, 115, 22, 0.32));
+}
+
+.hell-gauge__value {
+  display: block;
+  overflow: hidden;
+  color: #ffedd5;
+  font-size: 34rpx;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hell-gauge__label {
+  display: block;
+  margin-top: 8rpx;
+  color: rgba(255, 237, 213, 0.62);
+  font-size: 20rpx;
+}
+
+.hell-warning-panel {
+  display: grid;
+  grid-template-columns: 66rpx minmax(0, 1fr);
+  gap: 16rpx;
+  align-items: center;
+  padding: 20rpx;
+  color: #fff7ed;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, #7f1d1d, #111827);
+  box-shadow: 0 14rpx 30rpx rgba(127, 29, 29, 0.18);
+}
+
+.hell-warning-panel__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6rpx;
+  height: 58rpx;
+}
+
+.hell-warning-panel__bars text {
+  flex: 1;
+  border-radius: 999rpx;
+  background: #fb923c;
+}
+
+.hell-warning-panel__bars text:nth-child(1) {
+  height: 28rpx;
+}
+
+.hell-warning-panel__bars text:nth-child(2) {
+  height: 46rpx;
+}
+
+.hell-warning-panel__bars text:nth-child(3) {
+  height: 58rpx;
+}
+
+.hell-warning-panel__title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 900;
+}
+
+.hell-warning-panel__desc {
+  display: block;
+  margin-top: 6rpx;
+  color: rgba(255, 247, 237, 0.72);
+  font-size: 23rpx;
+  line-height: 1.42;
+}
+
+.hell-card {
+  border-color: rgba(127, 29, 29, 0.18);
+  background: linear-gradient(180deg, #fffaf0, #fff7ed);
 }
 </style>
