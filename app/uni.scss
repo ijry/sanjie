@@ -1,0 +1,36 @@
+$sanjie-bg: #f7f1e3;
+$sanjie-panel: #fffaf0;
+$sanjie-ink: #25211b;
+$sanjie-muted: #756f63;
+$sanjie-red: #a93226;
+$sanjie-gold: #b8860b;
+$sanjie-border: #e5d8bd;
+
+page {
+  background: $sanjie-bg;
+  color: $sanjie-ink;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+.panel {
+  background: $sanjie-panel;
+  border: 1rpx solid $sanjie-border;
+  border-radius: 8rpx;
+  padding: 24rpx;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.muted {
+  color: $sanjie-muted;
+}
+

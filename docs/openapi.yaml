@@ -1,0 +1,627 @@
+openapi: 3.0.3
+info:
+  title: Sanjie API
+  version: 0.1.0
+  description: 玩笑性质的三界管理系统 API。所有响应使用统一 envelope。
+servers:
+  - url: http://localhost:8080
+    description: Local backend
+  - url: http://localhost:8088
+    description: Docker Compose through Nginx
+tags:
+  - name: health
+  - name: users
+  - name: dashboard
+  - name: souls
+  - name: life-book
+  - name: capture
+  - name: reincarnation
+  - name: approvals
+  - name: hell
+  - name: wishes
+  - name: soup
+  - name: audit
+paths:
+  /api/health:
+    get:
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/users/me:
+    get:
+      tags: [users]
+      summary: Current demo user
+      parameters:
+        - $ref: "#/components/parameters/UserID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/users/switch:
+    post:
+      tags: [users]
+      summary: Switch demo user
+      requestBody:
+        $ref: "#/components/requestBodies/SwitchUser"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/dashboard:
+    get:
+      tags: [dashboard]
+      summary: Workbench metrics
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/alerts:
+    get:
+      tags: [dashboard]
+      summary: Alert list
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/alerts/{id}/handle:
+    post:
+      tags: [dashboard]
+      summary: Mark alert handled
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/audit-logs:
+    get:
+      tags: [audit]
+      summary: Audit logs
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/souls:
+    get:
+      tags: [souls]
+      summary: Soul list
+      parameters:
+        - $ref: "#/components/parameters/Keyword"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/souls/{id}:
+    get:
+      tags: [souls]
+      summary: Soul detail
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/life-book:
+    get:
+      tags: [life-book]
+      summary: Life book records
+      parameters:
+        - $ref: "#/components/parameters/Keyword"
+        - name: risk
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/life-book/{id}:
+    get:
+      tags: [life-book]
+      summary: Life book record detail
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/life-book/{id}/change-lifespan:
+    post:
+      tags: [life-book]
+      summary: Create lifespan change approval
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/ChangeLifespan"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/life-book/{id}/freeze:
+    post:
+      tags: [life-book]
+      summary: Freeze life book record
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/life-book/{id}/audit-logs:
+    get:
+      tags: [life-book]
+      summary: Life book audit logs
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/capture-tasks:
+    get:
+      tags: [capture]
+      summary: Capture task list
+      parameters:
+        - $ref: "#/components/parameters/Status"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/capture-tasks/{id}:
+    get:
+      tags: [capture]
+      summary: Capture task detail
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/capture-tasks/{id}/start:
+    post:
+      tags: [capture]
+      summary: Start capture task
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/capture-tasks/{id}/complete:
+    post:
+      tags: [capture]
+      summary: Complete capture task
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Note"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/capture-tasks/{id}/exception:
+    post:
+      tags: [capture]
+      summary: Report capture exception
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/CaptureException"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/capture-tasks/{id}/cancel:
+    post:
+      tags: [capture]
+      summary: Cancel capture task
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/reincarnations:
+    get:
+      tags: [reincarnation]
+      summary: Reincarnation order list
+      parameters:
+        - $ref: "#/components/parameters/Status"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/reincarnations/{id}:
+    get:
+      tags: [reincarnation]
+      summary: Reincarnation order detail
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/reincarnations/{id}/approve:
+    post:
+      tags: [reincarnation]
+      summary: Approve reincarnation
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Note"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/reincarnations/{id}/reject:
+    post:
+      tags: [reincarnation]
+      summary: Reject reincarnation
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Note"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/reincarnations/{id}/review:
+    post:
+      tags: [reincarnation]
+      summary: Move reincarnation to review
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Note"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/reincarnations/{id}/assign-quota:
+    post:
+      tags: [reincarnation]
+      summary: Assign reincarnation quota
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/AssignQuota"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/reincarnations/{id}/soup:
+    post:
+      tags: [reincarnation]
+      summary: Issue Mengpo soup
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/IssueSoup"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/reincarnations/{id}/complete:
+    post:
+      tags: [reincarnation]
+      summary: Complete reincarnation
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Note"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/approvals:
+    get:
+      tags: [approvals]
+      summary: Approval list
+      parameters:
+        - $ref: "#/components/parameters/Status"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/approvals/{id}:
+    get:
+      tags: [approvals]
+      summary: Approval detail
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/approvals/{id}/approve:
+    post:
+      tags: [approvals]
+      summary: Approve approval
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Note"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/approvals/{id}/reject:
+    post:
+      tags: [approvals]
+      summary: Reject approval
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Note"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/approvals/{id}/transfer:
+    post:
+      tags: [approvals]
+      summary: Transfer approval
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Note"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/hell/floors:
+    get:
+      tags: [hell]
+      summary: Hell floors
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/hell/floors/{id}/dispatch:
+    post:
+      tags: [hell]
+      summary: Dispatch hell floor occupancy
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/DispatchFloor"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/hell/sentences:
+    get:
+      tags: [hell]
+      summary: Hell sentences
+      parameters:
+        - name: floorId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/hell/sentences/{id}:
+    get:
+      tags: [hell]
+      summary: Hell sentence detail
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/hell/sentences/{id}/review:
+    post:
+      tags: [hell]
+      summary: Review hell sentence
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Note"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/wishes:
+    get:
+      tags: [wishes]
+      summary: Wish ticket list
+      parameters:
+        - $ref: "#/components/parameters/Status"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/wishes/{id}:
+    get:
+      tags: [wishes]
+      summary: Wish ticket detail
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/wishes/{id}/route:
+    post:
+      tags: [wishes]
+      summary: Route wish ticket
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/RouteWish"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/wishes/{id}/resolve:
+    post:
+      tags: [wishes]
+      summary: Resolve wish ticket
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Note"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/wishes/{id}/reject:
+    post:
+      tags: [wishes]
+      summary: Reject wish ticket
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/Note"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/soup/inventory:
+    get:
+      tags: [soup]
+      summary: Soup inventory
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/soup/inventory/{id}/adjust:
+    post:
+      tags: [soup]
+      summary: Adjust soup inventory
+      parameters:
+        - $ref: "#/components/parameters/ID"
+      requestBody:
+        $ref: "#/components/requestBodies/AdjustInventory"
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+  /api/soup/records:
+    get:
+      tags: [soup]
+      summary: Soup issue records
+      responses:
+        "200":
+          $ref: "#/components/responses/EnvelopeOK"
+components:
+  parameters:
+    ID:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+    UserID:
+      name: X-User-ID
+      in: header
+      required: false
+      schema:
+        type: integer
+        default: 1
+    Status:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+    Keyword:
+      name: keyword
+      in: query
+      required: false
+      schema:
+        type: string
+  responses:
+    EnvelopeOK:
+      description: Unified JSON envelope
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Envelope"
+    EnvelopeError:
+      description: Unified error envelope
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Envelope"
+  requestBodies:
+    SwitchUser:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [userId]
+            properties:
+              userId:
+                type: integer
+                minimum: 1
+    Note:
+      required: false
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              note:
+                type: string
+    ChangeLifespan:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [newLifespan, reason]
+            properties:
+              newLifespan:
+                type: integer
+              reason:
+                type: string
+    CaptureException:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [exceptionType]
+            properties:
+              exceptionType:
+                type: string
+                enum: [emergency_rescue, wrong_soul, escaped, not_found, ascended]
+              note:
+                type: string
+    AssignQuota:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [quotaType]
+            properties:
+              quotaType:
+                type: string
+    IssueSoup:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [inventoryId, dose]
+            properties:
+              inventoryId:
+                type: integer
+              dose:
+                type: integer
+              memoryAfter:
+                type: integer
+    DispatchFloor:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [targetFloorId, amount]
+            properties:
+              targetFloorId:
+                type: integer
+              amount:
+                type: integer
+    RouteWish:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [assignedDeity]
+            properties:
+              assignedDeity:
+                type: string
+              note:
+                type: string
+    AdjustInventory:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [delta]
+            properties:
+              delta:
+                type: integer
+              note:
+                type: string
+  schemas:
+    Envelope:
+      type: object
+      required: [code, message, data]
+      properties:
+        code:
+          type: integer
+          example: 0
+        message:
+          type: string
+          example: ok
+        data:
+          nullable: true

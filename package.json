@@ -1,0 +1,24 @@
+{
+  "name": "sanjie",
+  "version": "0.1.0",
+  "private": true,
+  "description": "三界管理系统 monorepo scripts",
+  "scripts": {
+    "dev:server": "cd server && go run .",
+    "dev:h5": "npm --prefix app run dev:h5",
+    "dev:h5:mock": "npm --prefix app run dev:h5:mock",
+    "dev:docs": "npm --prefix docs-site run docs:dev",
+    "server:test": "cd server && go test ./...",
+    "server:build": "cd server && go build ./...",
+    "server:smoke": "node scripts/smoke-server.mjs",
+    "app:install": "npm --prefix app install --legacy-peer-deps",
+    "app:build": "npm --prefix app run build:h5",
+    "app:build:mock": "npm --prefix app run build:h5:mock",
+    "docs:install": "npm --prefix docs-site install",
+    "docs:build": "npm --prefix docs-site run docs:build",
+    "verify": "npm run server:test && npm run server:build && npm run server:smoke && npm run app:build && npm run app:build:mock && npm run docs:build"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

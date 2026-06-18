@@ -1,0 +1,284 @@
+@baseUrl = http://localhost:8080
+@userId = 1
+
+### Health
+GET {{baseUrl}}/api/health
+X-User-ID: {{userId}}
+
+### Current user
+GET {{baseUrl}}/api/users/me
+X-User-ID: {{userId}}
+
+### Switch demo user
+POST {{baseUrl}}/api/users/switch
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "userId": 4
+}
+
+### Dashboard
+GET {{baseUrl}}/api/dashboard
+X-User-ID: {{userId}}
+
+### Alerts
+GET {{baseUrl}}/api/alerts
+X-User-ID: {{userId}}
+
+### Handle alert
+POST {{baseUrl}}/api/alerts/1/handle
+X-User-ID: {{userId}}
+
+### Souls
+GET {{baseUrl}}/api/souls
+X-User-ID: {{userId}}
+
+### Soul detail
+GET {{baseUrl}}/api/souls/1
+X-User-ID: {{userId}}
+
+### Capture tasks
+GET {{baseUrl}}/api/capture-tasks
+X-User-ID: {{userId}}
+
+### Start capture task
+POST {{baseUrl}}/api/capture-tasks/1/start
+X-User-ID: {{userId}}
+
+### Complete capture task
+POST {{baseUrl}}/api/capture-tasks/1/complete
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "note": "魂魄已签收"
+}
+
+### Report capture exception
+POST {{baseUrl}}/api/capture-tasks/1/exception
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "exceptionType": "wrong_soul",
+  "note": "疑似同名同姓"
+}
+
+### Cancel capture task
+POST {{baseUrl}}/api/capture-tasks/1/cancel
+X-User-ID: {{userId}}
+
+### Life book
+GET {{baseUrl}}/api/life-book
+X-User-ID: {{userId}}
+
+### Life book detail
+GET {{baseUrl}}/api/life-book/1
+X-User-ID: {{userId}}
+
+### Change lifespan
+POST {{baseUrl}}/api/life-book/1/change-lifespan
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "newLifespan": 88,
+  "reason": "救人一命"
+}
+
+### Freeze life book record
+POST {{baseUrl}}/api/life-book/1/freeze
+X-User-ID: {{userId}}
+
+### Life book audit logs
+GET {{baseUrl}}/api/life-book/1/audit-logs
+X-User-ID: {{userId}}
+
+### Approvals
+GET {{baseUrl}}/api/approvals
+X-User-ID: {{userId}}
+
+### Approval detail
+GET {{baseUrl}}/api/approvals/1
+X-User-ID: {{userId}}
+
+### Approve approval
+POST {{baseUrl}}/api/approvals/1/approve
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "note": "判官复核通过"
+}
+
+### Reject approval
+POST {{baseUrl}}/api/approvals/1/reject
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "note": "证据不足"
+}
+
+### Transfer approval
+POST {{baseUrl}}/api/approvals/1/transfer
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "note": "转交阎王"
+}
+
+### Reincarnations
+GET {{baseUrl}}/api/reincarnations
+X-User-ID: {{userId}}
+
+### Reincarnation detail
+GET {{baseUrl}}/api/reincarnations/1
+X-User-ID: {{userId}}
+
+### Approve reincarnation
+POST {{baseUrl}}/api/reincarnations/1/approve
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "note": "准了"
+}
+
+### Reject reincarnation
+POST {{baseUrl}}/api/reincarnations/1/reject
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "note": "功德余额不足"
+}
+
+### Review reincarnation
+POST {{baseUrl}}/api/reincarnations/1/review
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "note": "关系户风险"
+}
+
+### Assign reincarnation quota
+POST {{baseUrl}}/api/reincarnations/1/assign-quota
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "quotaType": "普通胎"
+}
+
+### Issue soup for reincarnation
+POST {{baseUrl}}/api/reincarnations/1/soup
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "inventoryId": 1,
+  "dose": 1,
+  "memoryAfter": 0
+}
+
+### Complete reincarnation
+POST {{baseUrl}}/api/reincarnations/1/complete
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "note": "已入轮回"
+}
+
+### Hell floors
+GET {{baseUrl}}/api/hell/floors
+X-User-ID: {{userId}}
+
+### Hell sentences
+GET {{baseUrl}}/api/hell/sentences
+X-User-ID: {{userId}}
+
+### Hell sentence detail
+GET {{baseUrl}}/api/hell/sentences/1
+X-User-ID: {{userId}}
+
+### Review hell sentence
+POST {{baseUrl}}/api/hell/sentences/1/review
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "note": "疑似判官手滑"
+}
+
+### Dispatch hell floor occupancy
+POST {{baseUrl}}/api/hell/floors/1/dispatch
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "targetFloorId": 2,
+  "amount": 40
+}
+
+### Wishes
+GET {{baseUrl}}/api/wishes
+X-User-ID: {{userId}}
+
+### Wish detail
+GET {{baseUrl}}/api/wishes/1
+X-User-ID: {{userId}}
+
+### Route wish
+POST {{baseUrl}}/api/wishes/1/route
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "assignedDeity": "财神",
+  "note": "转财运组"
+}
+
+### Resolve wish
+POST {{baseUrl}}/api/wishes/1/resolve
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "note": "建议先上班"
+}
+
+### Reject wish
+POST {{baseUrl}}/api/wishes/1/reject
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "note": "违反许愿配额"
+}
+
+### Soup inventory
+GET {{baseUrl}}/api/soup/inventory
+X-User-ID: {{userId}}
+
+### Adjust soup inventory
+POST {{baseUrl}}/api/soup/inventory/1/adjust
+Content-Type: application/json
+X-User-ID: {{userId}}
+
+{
+  "delta": 10,
+  "note": "补货"
+}
+
+### Soup records
+GET {{baseUrl}}/api/soup/records
+X-User-ID: {{userId}}
+
+### Audit logs
+GET {{baseUrl}}/api/audit-logs
+X-User-ID: {{userId}}

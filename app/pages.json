@@ -1,0 +1,35 @@
+{
+  "pages": [
+    { "path": "pages/index/index", "style": { "navigationBarTitleText": "三界工作台" } },
+    { "path": "pages/capture/index", "style": { "navigationBarTitleText": "勾魂任务" } },
+    { "path": "pages/reincarnation/index", "style": { "navigationBarTitleText": "投胎队列" } },
+    { "path": "pages/approval/index", "style": { "navigationBarTitleText": "审批中心" } },
+    { "path": "pages/mine/index", "style": { "navigationBarTitleText": "我的" } },
+    { "path": "pages/login/index", "style": { "navigationBarTitleText": "切换身份" } },
+    { "path": "pages/capture/detail", "style": { "navigationBarTitleText": "勾魂详情" } },
+    { "path": "pages/reincarnation/detail", "style": { "navigationBarTitleText": "投胎详情" } },
+    { "path": "pages/approval/detail", "style": { "navigationBarTitleText": "审批详情" } },
+    { "path": "pages/life-book/search", "style": { "navigationBarTitleText": "生死簿查询" } },
+    { "path": "pages/life-book/detail", "style": { "navigationBarTitleText": "生死簿详情" } },
+    { "path": "pages/hell/index", "style": { "navigationBarTitleText": "十八层地狱" } },
+    { "path": "pages/hell/sentence-detail", "style": { "navigationBarTitleText": "刑期详情" } },
+    { "path": "pages/wish/index", "style": { "navigationBarTitleText": "愿望工单" } },
+    { "path": "pages/wish/detail", "style": { "navigationBarTitleText": "愿望详情" } },
+    { "path": "pages/soup/index", "style": { "navigationBarTitleText": "孟婆汤库存" } },
+    { "path": "pages/audit/index", "style": { "navigationBarTitleText": "审计日志" } }
+  ],
+  "tabBar": {
+    "color": "#69707a",
+    "selectedColor": "#a93226",
+    "backgroundColor": "#fffaf0",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "工作台" },
+      { "pagePath": "pages/capture/index", "text": "勾魂" },
+      { "pagePath": "pages/reincarnation/index", "text": "投胎" },
+      { "pagePath": "pages/approval/index", "text": "审批" },
+      { "pagePath": "pages/mine/index", "text": "我的" }
+    ]
+  }
+}
+

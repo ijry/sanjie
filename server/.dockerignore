@@ -1,0 +1,9 @@
+*.db
+*.db-shm
+*.db-wal
+*.log
+*.exe
+*.test
+*.out
+server.err.log
+server.out.log

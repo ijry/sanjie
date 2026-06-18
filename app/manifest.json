@@ -1,0 +1,15 @@
+{
+  "name": "Sanjie",
+  "appid": "__UNI__SANJIE",
+  "description": "三界管理系统移动端",
+  "versionName": "0.1.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "h5": {
+    "title": "Sanjie 三界管理系统",
+    "router": {
+      "mode": "hash"
+    }
+  }
+}
+

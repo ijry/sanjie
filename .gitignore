@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build output
+dist/
+build/
+coverage/
+.nyc_output/
+
+# VitePress
+docs-site/docs/.vitepress/dist/
+docs-site/docs/.vitepress/cache/
+
+# Go
+*.exe
+*.test
+*.out
+coverage.txt
+
+# SQLite runtime data
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Local config and env
+config.yaml
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# OS and editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+

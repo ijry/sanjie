@@ -1,0 +1,42 @@
+name: Feature Request
+description: 提议新功能或模块优化
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 背景和目标
+      description: 这个功能要解决什么问题？
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议方案
+      description: 描述你希望的交互、接口或业务流。
+    validations:
+      required: true
+  - type: dropdown
+    id: module
+    attributes:
+      label: 相关模块
+      options:
+        - 工作台
+        - 勾魂管理
+        - 投胎管理
+        - 审批中心
+        - 生死簿
+        - 十八层地狱
+        - 愿望工单
+        - 孟婆汤
+        - 审计日志
+        - 文档或部署
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 验收标准
+      description: 列出怎样算完成。
