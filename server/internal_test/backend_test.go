@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 
 	"github.com/ijry/sanjie/internal/app"
@@ -42,7 +43,7 @@ func TestDashboardAndAlert(t *testing.T) {
 	if err := json.NewDecoder(res.Body).Decode(&body); err != nil {
 		t.Fatal(err)
 	}
-	if body.Data.PendingCaptureCount != 1 || body.Data.UnhandledAlertCount != 3 {
+	if body.Data.PendingCaptureCount != 3 || body.Data.UnhandledAlertCount != 3 {
 		t.Fatalf("unexpected dashboard metrics: %+v", body.Data)
 	}
 
@@ -70,10 +71,19 @@ func TestCaptureTaskFlow(t *testing.T) {
 func TestLifeBookApprovalFlow(t *testing.T) {
 	application := app.New(NewTestDB(t))
 	expectOK(t, perform(t, application, http.MethodPost, "/api/life-book/1/freeze", ""))
-	expectOK(t, perform(t, application, http.MethodPost, "/api/life-book/1/change-lifespan", `{"newLifespan":88,"reason":"救人一命"}`))
-	expectOK(t, perform(t, application, http.MethodPost, "/api/approvals/1/approve", `{"note":"判官复核通过"}`))
+	res := perform(t, application, http.MethodPost, "/api/life-book/1/change-lifespan", `{"newLifespan":88,"reason":"救人一命"}`)
+	expectOK(t, res)
+	var approvalBody struct {
+		Data struct {
+			ApprovalID int64 `json:"approvalId"`
+		} `json:"data"`
+	}
+	if err := json.NewDecoder(res.Body).Decode(&approvalBody); err != nil {
+		t.Fatal(err)
+	}
+	expectOK(t, perform(t, application, http.MethodPost, "/api/approvals/"+strconv.FormatInt(approvalBody.Data.ApprovalID, 10)+"/approve", `{"note":"判官复核通过"}`))
 
-	res := perform(t, application, http.MethodGet, "/api/life-book/1", "")
+	res = perform(t, application, http.MethodGet, "/api/life-book/1", "")
 	expectOK(t, res)
 	var body struct {
 		Data struct {
