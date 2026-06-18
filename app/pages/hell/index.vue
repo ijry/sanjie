@@ -1,62 +1,63 @@
 <template>
-  <view class="page stack dense-page">
-    <view class="module-hero">
-      <text class="module-hero__eyebrow">HELL OPERATIONS</text>
-      <text class="module-hero__title">十八层地狱</text>
-      <text class="module-hero__desc">楼层容量、设备状态和刑期复核统一调度，高负载楼层可一键分流。</text>
-      <view class="module-hero__stats">
-        <view class="module-hero__stat">
+  <view class="page stack dense-page hell-list-page">
+    <view class="hell-ops-board">
+      <view class="hell-ops-board__flame"></view>
+      <text class="hell-ops-board__eyebrow">HELL OPERATIONS</text>
+      <text class="hell-ops-board__title">十八层地狱</text>
+      <text class="hell-ops-board__desc">楼层容量、设备状态和刑期复核统一调度，高负载楼层可一键分流。</text>
+      <view class="hell-ops-board__stats">
+        <view class="hell-ops-board__stat">
           <text>{{ floors.length }}</text>
           <text>楼层</text>
         </view>
-        <view class="module-hero__stat">
+        <view class="hell-ops-board__stat">
           <text>{{ criticalCount }}</text>
           <text>严重</text>
         </view>
-        <view class="module-hero__stat">
+        <view class="hell-ops-board__stat">
           <text>{{ totalOccupancy }}</text>
           <text>在押</text>
         </view>
       </view>
     </view>
 
-    <view class="detail-card stack">
+    <view class="hell-panel stack">
       <SectionTitle title="楼层负载" />
-      <view v-for="floor in floors" :key="floor.id" class="floor">
+      <view v-for="floor in floors" :key="floor.id" class="floor-monitor">
         <view>
-          <text class="floor__name">{{ floor.floorNo }} 层 · {{ floor.name }}</text>
-          <text class="floor__meta">{{ floor.occupancy }}/{{ floor.capacity }} · {{ floor.equipmentStatus }} · {{ percent(floor) }}%</text>
-          <view class="floor__bar">
-            <view class="floor__bar-inner" :style="{ width: `${percent(floor)}%` }"></view>
+          <text class="floor-monitor__name">{{ floor.floorNo }} 层 · {{ floor.name }}</text>
+          <text class="floor-monitor__meta">{{ floor.occupancy }}/{{ floor.capacity }} · {{ floor.equipmentStatus }} · {{ percent(floor) }}%</text>
+          <view class="floor-monitor__bar">
+            <view class="floor-monitor__bar-inner" :style="{ width: `${percent(floor)}%` }"></view>
           </view>
         </view>
-        <view class="floor__ops">
+        <view class="floor-monitor__ops">
           <StatusTag :value="floor.loadLevel" />
           <up-button v-if="floor.loadLevel === 'critical'" size="mini" type="warning" text="分流" @click="dispatch(floor)" />
         </view>
       </view>
     </view>
 
-    <view class="detail-card">
+    <view class="hell-panel">
       <SectionTitle title="刑期记录" />
       <EmptyState v-if="sentences.length === 0" text="暂无刑期记录" />
-      <view v-else class="card-list">
-        <view v-for="item in sentences" :key="item.id" class="work-card" @click="openSentence(item.id)">
-          <view class="work-card__head">
-            <view class="work-card__title">
+      <view v-else class="sentence-console-list">
+        <view v-for="item in sentences" :key="item.id" class="sentence-console-card" @click="openSentence(item.id)">
+          <view class="sentence-console-card__head">
+            <view class="sentence-console-card__title">
               <text>{{ item.soulName }}</text>
-              <text class="work-card__subtitle">{{ item.floorName }} · {{ item.crimeType }}</text>
+              <text>{{ item.floorName }} · {{ item.crimeType }}</text>
             </view>
             <StatusTag :value="item.reviewStatus" />
           </view>
-          <view class="work-card__grid">
-            <view class="work-card__field">
-              <text class="work-card__field-label">刑期</text>
-              <text class="work-card__field-value">{{ item.sentenceDays }} 天</text>
+          <view class="sentence-console-card__gauges">
+            <view>
+              <text class="sentence-console-card__value">{{ item.sentenceDays }}</text>
+              <text class="sentence-console-card__label">刑期 / 天</text>
             </view>
-            <view class="work-card__field">
-              <text class="work-card__field-label">痛感</text>
-              <text class="work-card__field-value">{{ item.painLevel }}/10</text>
+            <view>
+              <text class="sentence-console-card__value">{{ item.painLevel }}/10</text>
+              <text class="sentence-console-card__label">痛感</text>
             </view>
           </view>
         </view>
@@ -113,28 +114,126 @@ onShow(load)
 </script>
 
 <style scoped>
-.floor {
+.hell-list-page {
+  background:
+    radial-gradient(circle at 82% 0%, rgba(239, 68, 68, 0.2), transparent 26%),
+    linear-gradient(180deg, #0f0a08 0%, #2b0f0b 30%, #f7f1e3 30%, #f7f1e3 100%);
+}
+
+.hell-ops-board {
+  position: relative;
+  overflow: hidden;
+  padding: 26rpx;
+  color: #fff7ed;
+  border: 1rpx solid rgba(248, 113, 113, 0.28);
+  border-radius: 28rpx;
+  background:
+    linear-gradient(90deg, rgba(248, 113, 113, 0.08) 1rpx, transparent 1rpx),
+    linear-gradient(0deg, rgba(248, 113, 113, 0.08) 1rpx, transparent 1rpx),
+    linear-gradient(135deg, #120806, #450a0a 56%, #111827);
+  background-size: 36rpx 36rpx;
+  box-shadow: 0 22rpx 46rpx rgba(69, 10, 10, 0.26);
+}
+
+.hell-ops-board__flame {
+  position: absolute;
+  right: -50rpx;
+  top: -70rpx;
+  width: 230rpx;
+  height: 230rpx;
+  border-radius: 50%;
+  background: rgba(249, 115, 22, 0.26);
+}
+
+.hell-ops-board__eyebrow,
+.hell-ops-board__title,
+.hell-ops-board__desc {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.hell-ops-board__eyebrow {
+  color: #fb923c;
+  font-size: 20rpx;
+  font-weight: 900;
+  letter-spacing: 2rpx;
+}
+
+.hell-ops-board__title {
+  margin-top: 6rpx;
+  font-size: 44rpx;
+  font-weight: 900;
+}
+
+.hell-ops-board__desc {
+  width: 76%;
+  margin-top: 8rpx;
+  color: rgba(255, 247, 237, 0.72);
+  font-size: 24rpx;
+  line-height: 1.42;
+}
+
+.hell-ops-board__stats {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10rpx;
+  margin-top: 22rpx;
+}
+
+.hell-ops-board__stat {
+  padding: 14rpx 12rpx;
+  border: 1rpx solid rgba(251, 146, 60, 0.24);
+  border-radius: 14rpx;
+  background: rgba(15, 23, 42, 0.52);
+}
+
+.hell-ops-board__stat text:first-child {
+  display: block;
+  color: #ffedd5;
+  font-size: 30rpx;
+  font-weight: 900;
+}
+
+.hell-ops-board__stat text:last-child {
+  display: block;
+  margin-top: 4rpx;
+  color: rgba(255, 237, 213, 0.64);
+  font-size: 20rpx;
+}
+
+.hell-panel {
+  padding: 22rpx;
+  border: 1rpx solid rgba(127, 29, 29, 0.18);
+  border-radius: 20rpx;
+  background: linear-gradient(180deg, #fffaf0, #fff7ed);
+}
+
+.floor-monitor {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16rpx;
   padding: 18rpx 0;
-  border-bottom: 1rpx solid #e5d8bd;
+  border-bottom: 1rpx solid rgba(127, 29, 29, 0.16);
 }
 
-.floor__name {
+.floor-monitor__name {
   display: block;
-  font-weight: 700;
+  color: #431407;
+  font-weight: 900;
 }
 
-.floor__meta {
+.floor-monitor__meta {
   display: block;
   margin-top: 6rpx;
-  color: #756f63;
+  color: #7f1d1d;
   font-size: 24rpx;
 }
 
-.floor__bar {
+.floor-monitor__bar {
   width: 300rpx;
   height: 10rpx;
   margin-top: 10rpx;
@@ -143,16 +242,80 @@ onShow(load)
   background: rgba(229, 216, 189, 0.75);
 }
 
-.floor__bar-inner {
+.floor-monitor__bar-inner {
   height: 100%;
   border-radius: 999rpx;
-  background: linear-gradient(90deg, #b8860b, #a93226);
+  background: linear-gradient(90deg, #fb923c, #a93226);
 }
 
-.floor__ops {
+.floor-monitor__ops {
   display: flex;
   flex-direction: column;
   gap: 10rpx;
   align-items: flex-end;
+}
+
+.sentence-console-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  margin-top: 14rpx;
+}
+
+.sentence-console-card {
+  padding: 18rpx;
+  color: #fff7ed;
+  border-radius: 18rpx;
+  background: linear-gradient(135deg, #1f0f0f, #7f1d1d);
+  box-shadow: 0 10rpx 26rpx rgba(127, 29, 29, 0.16);
+}
+
+.sentence-console-card__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.sentence-console-card__title text:first-child {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 900;
+}
+
+.sentence-console-card__title text:last-child {
+  display: block;
+  margin-top: 6rpx;
+  color: rgba(255, 237, 213, 0.68);
+  font-size: 22rpx;
+}
+
+.sentence-console-card__gauges {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10rpx;
+  margin-top: 14rpx;
+}
+
+.sentence-console-card__gauges view {
+  padding: 12rpx;
+  border: 1rpx solid rgba(251, 146, 60, 0.22);
+  border-radius: 14rpx;
+  background: rgba(15, 23, 42, 0.38);
+}
+
+.sentence-console-card__value,
+.sentence-console-card__label {
+  display: block;
+}
+
+.sentence-console-card__value {
+  font-size: 28rpx;
+  font-weight: 900;
+}
+
+.sentence-console-card__label {
+  margin-top: 4rpx;
+  color: rgba(255, 237, 213, 0.66);
+  font-size: 20rpx;
 }
 </style>
